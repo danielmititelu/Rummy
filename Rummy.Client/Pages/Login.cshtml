@@ -1,0 +1,27 @@
+﻿@layout LoginLayout
+@page "/login"
+
+<div class="container-fluid">
+    <h1>Login</h1>
+    <form>
+        <div class="container">
+            <label><b>Email</b></label>
+            <input type="text" name="email" placeholder="Enter Email" bind="@Email" required />
+
+            <label><b>Password</b></label>
+            <input type="password" name="password" placeholder="Enter Password" bind="@Password" required />
+
+            <button type="button" onclick="@LoginClick">Login</button>
+        </div>
+    </form>
+</div>
+
+@functions {
+    public string Email { get; set; }
+    public string Password { get; set; }
+
+    void LoginClick()
+    {
+        Console.WriteLine($"Email: {Email}, Password:{Password} ");
+    }
+}

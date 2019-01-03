@@ -1,27 +1,33 @@
 ﻿@layout LoginLayout
 @page "/register"
+@using Rummy.Shared.Models
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@inject LocalStorage Storage
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <div class="container-fluid">
     <h1>Register</h1>
     <form>
         <div class="container">
             <label><b>Email</b></label>
-            <input type="text" name="email" placeholder="Enter Email" bind="@Email" required />
+            <input type="text" name="email" placeholder="Enter Email" bind="@user.Email" required />
 
             <label><b>Password</b></label>
-            <input type="password" name="password" placeholder="Enter Password" bind="@Password" required />
+            <input type="password" name="password" placeholder="Enter Password" bind="@user.Password" required />
 
-            <button type="button" onclick="@RegisterClick">Login</button>
+            <button type="button" onclick="@RegisterClick">Register</button>
         </div>
     </form>
 </div>
 
 @functions {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public User user = new User();
 
-    void RegisterClick()
+    async void RegisterClick()
     {
-        Console.WriteLine($"Email: {Email}, Password:{Password} ");
+        var response = await Http.PostJsonAsync<AuthResponse>("api/Auth/register", user);
+        Storage.SetItem("auth", response);
+        UriHelper.NavigateTo("");
     }
 }

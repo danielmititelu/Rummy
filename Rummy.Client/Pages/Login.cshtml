@@ -1,11 +1,11 @@
 ﻿@layout LoginLayout
 @page "/login"
 @using Rummy.Shared.Models
-@using System.Net.Http.Headers
 @using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@using System.Text
 @inject LocalStorage Storage
 @inject HttpClient Http
-
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <div class="container-fluid">
     <h1>Login</h1>
@@ -20,16 +20,32 @@
             <button type="button" onclick="@LoginClick">Login</button>
         </div>
     </form>
+
+    <NavLink class="nav-link" href="register">
+        Register
+    </NavLink>
+    <p>@ErrorMessage</p>
 </div>
 
 @functions {
     public User user = new User();
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public string ErrorMessage { get; set; } = "asd";
 
     async void LoginClick()
     {
-        var response = await Http.PostJsonAsync<AuthResponse>("api/Auth/login", user);
-        Storage.SetItem("auth", response);
+        var stringContent = new StringContent(Json.Serialize(user), Encoding.UTF8, "application/json");
+        var httpResponse = await Http.PostAsync("api/Auth/login", stringContent);
+        if (httpResponse.IsSuccessStatusCode)
+        {
+
+            var auth = Json.Deserialize<AuthResponse>(await httpResponse.Content.ReadAsStringAsync());
+            Storage.SetItem("auth", auth);
+            UriHelper.NavigateTo("");
+        }
+        else
+        {
+            ErrorMessage = "Invalid username or password";
+            this.StateHasChanged();
+        }
     }
 }

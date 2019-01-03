@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Rummy.Server.Options;
+using Rummy.Server.Services;
 using Rummy.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,12 @@ namespace Rummy.Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IOptions<AppOptions> _appOptions;
+        private readonly AuthService _authService;
 
-        public AuthController(IOptions<AppOptions> appOptions)
+        public AuthController(IOptions<AppOptions> appOptions, AuthService authService)
         {
             _appOptions = appOptions;
+            _authService = authService;
         }
 
         [HttpPost, Route("login")]
@@ -32,27 +35,10 @@ namespace Rummy.Server.Controllers
 
             try
             {
-                //todo: check if credentials are corect
-                //if (!_authService.AreCredentialsValid(user)) return Unauthorized();
+                if (!_authService.AreCredentialsValid(user)) return Unauthorized();
 
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appOptions.Value.JwtSecretKey));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
-                var tokenOptions = new JwtSecurityToken(
-                    issuer: _appOptions.Value.AppDns,
-                    audience: _appOptions.Value.AppDns,
-                    claims: new List<Claim> { new Claim("email", user.Email) },
-                    expires: DateTime.Now.AddDays(1),
-                    signingCredentials: signinCredentials
-                );
-
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-
-                return Ok(new AuthResponse
-                {
-                    Email = user.Email,
-                    Token = tokenString
-                });
+                var response = GenerateToken(user);
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -67,9 +53,35 @@ namespace Rummy.Server.Controllers
             {
                 return BadRequest("Invalid client request");
             }
-            //Todo: add user to db
-            //_authService.Register(user);
-            return Ok();
+
+            _authService.Register(user);
+
+            var response = GenerateToken(user);
+            return Ok(response);
         }
+
+        private AuthResponse GenerateToken(User user)
+        {
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appOptions.Value.JwtSecretKey));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+            var tokenOptions = new JwtSecurityToken(
+                issuer: _appOptions.Value.AppDns,
+                audience: _appOptions.Value.AppDns,
+                claims: new List<Claim> { new Claim("email", user.Email) },
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: signinCredentials
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            var response = new AuthResponse
+            {
+                Email = user.Email,
+                Token = tokenString
+            };
+            return response;
+        }
+
     }
 }

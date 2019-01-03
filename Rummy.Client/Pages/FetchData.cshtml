@@ -1,5 +1,9 @@
 ﻿@using Rummy.Shared
 @page "/fetchdata"
+@using System.Net.Http.Headers
+@using Rummy.Shared.Models
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@inject LocalStorage Storage
 @inject HttpClient Http
 
 <h1>Weather forecast</h1>
@@ -40,6 +44,8 @@ else
 
     protected override async Task OnInitAsync()
     {
+        var auth = Storage.GetItem<AuthResponse>("auth");
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth.Token);
         forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
     }
 }

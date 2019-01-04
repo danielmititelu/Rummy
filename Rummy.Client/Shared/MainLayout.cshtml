@@ -4,19 +4,20 @@
 @inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
-<div class="sidebar">
-    <NavMenu />
-</div>
-
-<div class="main">
-    <div class="top-row px-4">
-        <div class="col-md-10 ml-md-auto"></div>
-        <h2 class="ml-md-auto">@email</h2>
-        <button onclick="@ActionClick" class="ml-md-auto">@action</button>
+<div class="app">
+    <div class="sidebar">
+        <NavMenu />
     </div>
 
-    <div class="content px-4">
-        @Body
+    <div class="main">
+        <div class="top-row d-flex flex-row-reverse">
+            <button onclick="@ActionClick" class="btn btn-dark p-2 ">@action</button>
+            <label id="email" class="text-dark p-2">@email</label>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
     </div>
 </div>
 

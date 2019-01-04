@@ -6,23 +6,35 @@
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
-<div class="container-fluid">
-    <h1>Register</h1>
-    <form>
-        <div class="container">
-            <label><b>Email</b></label>
-            <input type="text" name="email" placeholder="Enter Email" bind="@user.Email" required />
-
-            <label><b>Password</b></label>
-            <input type="password" name="password" placeholder="Enter Password" bind="@user.Password" required />
-
-            <button type="button" onclick="@RegisterClick">Register</button>
+<div id="login">
+    <div class="container">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-6">
+                <div class="login-box col-md-12">
+                    <form id="login-form" class="form" action="" method="post">
+                        <h3 class="text-center text-info">Register</h3>
+                        <div class="form-group">
+                            <label for="username" class="text-info">Username:</label><br>
+                            <input bind="@user.Email" type="text" name="username" id="username" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="text-info">Password:</label><br>
+                            <input bind="@user.Password" type="password" name="password" id="password" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="text-danger"><span>@ErrorMessage</span></label><br>
+                            <button type="button" onclick="@RegisterClick">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
 
 @functions {
     public User user = new User();
+    public string ErrorMessage { get; set; }
 
     async void RegisterClick()
     {

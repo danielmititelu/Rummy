@@ -10,6 +10,10 @@ html, body {
     flex-direction: column;
 }
 
+.rooms-select{
+    overflow: auto;
+}
+
 .top-row {
     height: 3.5rem;
     display: flex;

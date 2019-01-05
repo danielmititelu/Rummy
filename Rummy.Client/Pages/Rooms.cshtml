@@ -1,0 +1,53 @@
+﻿@page "/rooms"
+@using Blazor.Extensions
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@using Rummy.Shared.Models
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<div class="row">
+    <div class="col-sm">
+        <label>Rooms</label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm">
+        <select bind="@selectedRoom" class="rooms-select" size="10">
+            @foreach (var room in rooms)
+            {
+                <option value="@room">@room</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row">
+    <button class="btn btn-primary" type="button" onclick="@JoinRoom">JoinRoom</button>
+</div>
+<div class="row">
+    <p class="text-danger">@errorMessage</p>
+</div>
+
+@functions{
+    List<string> rooms;
+    string selectedRoom;
+    string errorMessage;
+
+    protected override async Task OnInitAsync()
+    {
+        rooms = new List<string>
+            {
+            "firstRoom",
+            "BestRoom"
+            };
+    }
+
+    void JoinRoom()
+    {
+        if (selectedRoom == null)
+        {
+            errorMessage = "Please select a room";
+            return;
+        }
+        UriHelper.NavigateTo($"chatRoom/{selectedRoom}");
+    }
+}

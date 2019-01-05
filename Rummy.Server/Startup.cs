@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using Rummy.Server.Hubs;
 using Rummy.Server.Models;
 using Rummy.Server.Options;
 using Rummy.Server.Services;
@@ -30,7 +31,7 @@ namespace Rummy.Server
         }
 
         public IConfiguration Configuration { get; }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppOptions>(Configuration.GetSection("AppOptions"));
@@ -86,6 +87,8 @@ namespace Rummy.Server
                 .RequireAuthenticatedUser()
                 .Build();
 
+            services.AddSignalR();
+
             services.AddMvc(setup =>
             {
                 setup.Filters.Add(new AuthorizeFilter(defaultPolicy));
@@ -100,7 +103,7 @@ namespace Rummy.Server
                 });
             });
         }
-        
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseResponseCompression();
@@ -111,6 +114,11 @@ namespace Rummy.Server
             }
 
             app.UseAuthentication();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
 
             app.UseMvc(routes =>
             {

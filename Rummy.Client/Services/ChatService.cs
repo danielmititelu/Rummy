@@ -15,6 +15,13 @@ namespace Rummy.Client.Services
             _authService = authService;
             connection = new HubConnectionBuilder().WithUrl("/chathub").Build();
         }
+        public async Task CreateRoom(string roomName)
+        {
+            _roomName = roomName;
+            await connection.StartAsync();
+            await connection.InvokeAsync("CreateRoom", roomName);
+            await connection.InvokeAsync("JoinRoom", roomName);
+        }
 
         public async Task JoinRoom(string roomName)
         {

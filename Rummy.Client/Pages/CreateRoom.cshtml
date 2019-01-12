@@ -1,8 +1,6 @@
 ﻿@page "/createRoom"
-@using Blazor.Extensions
-@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
-@using Rummy.Shared.Models
-@inject LocalStorage Storage
+@using Rummy.Client.Services
+@inject ChatService ChatService
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 
@@ -19,18 +17,10 @@
 
 @functions{
     string roomName;
-    HubConnection connection;
-
-    protected override async Task OnInitAsync()
-    {
-        connection = new HubConnectionBuilder().WithUrl("/chathub").Build();
-        await connection.StartAsync();
-    }
-
+    
     async void CreateRoomAction()
     {
-        await connection.InvokeAsync("CreateRoom", roomName);
-        await connection.InvokeAsync("JoinRoom", roomName);
+        await ChatService.CreateRoom(roomName);
         UriHelper.NavigateTo($"chatRoom/{roomName}");
     }
 }

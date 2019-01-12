@@ -1,9 +1,8 @@
 ﻿@page "/chatRoom/{RoomName}"
-@using Blazor.Extensions
 @using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
-@using Rummy.Shared.Models
+@using Rummy.Client.Services
 @inject LocalStorage Storage
-
+@inject ChatService ChatService
 
 <p>@RoomName</p>
 <div class="container">
@@ -22,19 +21,13 @@
     [Parameter]
     private string RoomName { get; set; }
 
-    HubConnection connection;
-    string user;
     string message = "";
     IList<string> messages = new List<string>();
 
     protected override async Task OnInitAsync()
     {
-        var auth = Storage.GetItem<AuthResponse>("auth");
-        user = auth.Email;
-        connection = new HubConnectionBuilder().WithUrl("/chathub").Build();
-        connection.On<string, string>("ReceiveMessage", this.OnBroadcastMessage);
-        await connection.StartAsync();
-        await connection.InvokeAsync("JoinRoom", RoomName);
+        ChatService.OnBroadcastMessage(this.OnBroadcastMessage);
+        await ChatService.JoinRoom(RoomName); 
     }
 
     Task OnBroadcastMessage(string name, string message)
@@ -46,7 +39,7 @@
 
     async Task SendMessage()
     {
-        await connection.InvokeAsync("SendMessageToRoom", RoomName, user, message);
+        await ChatService.SendMessage(message);
         message = "";
     }
 }

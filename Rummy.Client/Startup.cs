@@ -10,6 +10,7 @@ namespace Rummy.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<AuthService>();
+            services.AddSingleton<ChatService>();
             services.AddStorage();
         }
 

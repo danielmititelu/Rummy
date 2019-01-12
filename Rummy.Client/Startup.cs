@@ -1,6 +1,7 @@
 using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
 using Microsoft.AspNetCore.Blazor.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Rummy.Client.Services;
 
 namespace Rummy.Client
 {
@@ -8,6 +9,7 @@ namespace Rummy.Client
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<AuthService>();
             services.AddStorage();
         }
 

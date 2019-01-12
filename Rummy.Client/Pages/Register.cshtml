@@ -1,9 +1,8 @@
 ﻿@layout EmptyLayout
 @page "/register"
 @using Rummy.Shared.Models
-@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
-@inject LocalStorage Storage
-@inject HttpClient Http
+@using Rummy.Client.Services
+@inject AuthService AuthService
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <div id="login">
@@ -38,8 +37,14 @@
 
     async void RegisterClick()
     {
-        var response = await Http.PostJsonAsync<AuthResponse>("api/Auth/register", user);
-        Storage.SetItem("auth", response);
-        UriHelper.NavigateTo("");
+        if (await AuthService.TryLogin(user))
+        {
+            UriHelper.NavigateTo("");
+        }
+        else
+        {
+            ErrorMessage = "An error occurred";
+            StateHasChanged();
+        }
     }
 }

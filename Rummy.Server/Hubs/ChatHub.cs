@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,17 +7,31 @@ namespace Rummy.Server.Hubs
 {
     public class ChatHub : Hub
     {
-        private List<string> rooms;
+        private readonly IMemoryCache _memoryCache;
+        private readonly string roomKey = "roomKey";
 
-        public ChatHub()
+        public ChatHub(IMemoryCache memoryCache)
         {
-            rooms = new List<string>();
+            _memoryCache = memoryCache;
         }
 
-        public async void CreateRoom(string roomName)
+        public List<string> GetRooms()
         {
+            if (_memoryCache.TryGetValue<List<string>>(roomKey, out var rooms))
+            {
+                return rooms;
+            }
+            return new List<string>();
+        }
+
+        public void CreateRoom(string roomName)
+        {
+            if (!_memoryCache.TryGetValue<List<string>>(roomKey, out var rooms))
+            {
+                rooms = new List<string>();
+            }
             rooms.Add(roomName);
-            await JoinRoom(roomName);
+            _memoryCache.Set(roomKey, rooms);
         }
 
         public async Task JoinRoom(string roomName)

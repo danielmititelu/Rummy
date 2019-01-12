@@ -1,0 +1,36 @@
+﻿@page "/createRoom"
+@using Blazor.Extensions
+@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+@using Rummy.Shared.Models
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+
+<h1>Create Room</h1>
+<div class="row">
+    <label>Room Name:</label>
+</div>
+<div class="row">
+    <input type="text" class="form-control" bind="@roomName" />
+</div>
+<div class="row">
+    <input type="button" id="sendMessage" value="Create Room" class="btn btn-primary" onclick="@CreateRoomAction" />
+</div>
+
+@functions{
+    string roomName;
+    HubConnection connection;
+
+    protected override async Task OnInitAsync()
+    {
+        connection = new HubConnectionBuilder().WithUrl("/chathub").Build();
+        await connection.StartAsync();
+    }
+
+    async void CreateRoomAction()
+    {
+        await connection.InvokeAsync("CreateRoom", roomName);
+        await connection.InvokeAsync("JoinRoom", roomName);
+        UriHelper.NavigateTo($"chatRoom/{roomName}");
+    }
+}

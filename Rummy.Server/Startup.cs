@@ -41,6 +41,8 @@ namespace Rummy.Server
 
             services.AddScoped<AuthService>();
 
+            services.AddMemoryCache();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

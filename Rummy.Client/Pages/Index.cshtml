@@ -1,24 +1,29 @@
 ﻿@page "/"
 @using Rummy.Client.Services
 @inject AuthService AuthService
-    
+@inject ChatService ChatService
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @*<SurveyPrompt Title="How is Blazor working for you?" />*@
-@if (isAuthenticated)
-{
-    <p>Welcome page</p>
-}
-else
-{
-    <p>You are not logged in</p>
-}
+
+<button class="btn btn-primary" type="button" onclick="@JoinRoomAction">Join Room</button>
+<button class="btn btn-primary" type="button" onclick="@CreateRoomAction">Create Room</button>
 
 @functions{
     string username;
-    bool isAuthenticated;
 
-    protected override void OnInit()
+    protected override async Task OnInitAsync()
     {
-        isAuthenticated = AuthService.TryGetUsername(out username);
+        await ChatService.StartAsync();
+    }
+
+    void JoinRoomAction()
+    {
+        UriHelper.NavigateTo("rooms");
+    }
+
+    void CreateRoomAction()
+    {
+        UriHelper.NavigateTo("createRoom");
     }
 }
 

@@ -1,8 +1,6 @@
 ﻿@page "/rooms"
-@using Blazor.Extensions
-@using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
-@using Rummy.Shared.Models
-@inject LocalStorage Storage
+@using Rummy.Client.Services
+@inject ChatService ChatService
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <div class="row">
@@ -24,7 +22,7 @@
     <button class="btn btn-primary" type="button" onclick="@JoinRoom">Join Room</button>
 </div>
 <div class="row">
-    <button class="btn btn-primary" type="button" onclick="@CreateRoomAction">Create Room</button>
+    <button class="btn btn-primary" type="button" onclick="@BackToHome">Back</button>
 </div>
 <div class="row">
     <p class="text-danger">@errorMessage</p>
@@ -34,13 +32,10 @@
     List<string> rooms = new List<string>();
     string selectedRoom;
     string errorMessage;
-    HubConnection connection;
 
     protected override async Task OnInitAsync()
     {
-        connection = new HubConnectionBuilder().WithUrl("/chathub").Build();
-        await connection.StartAsync();
-        rooms = await connection.InvokeAsync<List<string>>("GetRooms");
+        rooms = await ChatService.GetRooms();
         StateHasChanged();
     }
 
@@ -54,8 +49,8 @@
         UriHelper.NavigateTo($"chatRoom/{selectedRoom}");
     }
 
-    void CreateRoomAction()
+    void BackToHome()
     {
-        UriHelper.NavigateTo("createRoom");
+        UriHelper.NavigateTo("/");
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Blazor.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Rummy.Client.Services
@@ -15,10 +16,15 @@ namespace Rummy.Client.Services
             _authService = authService;
             connection = new HubConnectionBuilder().WithUrl("/chathub").Build();
         }
+
+        public async Task StartAsync()
+        {
+            await connection.StartAsync();
+        }
+
         public async Task CreateRoom(string roomName)
         {
             _roomName = roomName;
-            await connection.StartAsync();
             await connection.InvokeAsync("CreateRoom", roomName);
             await connection.InvokeAsync("JoinRoom", roomName);
         }
@@ -26,11 +32,15 @@ namespace Rummy.Client.Services
         public async Task JoinRoom(string roomName)
         {
             _roomName = roomName;
-            await connection.StartAsync();
             await connection.InvokeAsync("JoinRoom", _roomName);
         }
 
-        public void OnBroadcastMessage(Func<string,string,Task> onBroadcastMessage)
+        public async Task<List<string>> GetRooms()
+        {
+            return await connection.InvokeAsync<List<string>>("GetRooms");
+        }
+
+        public void OnBroadcastMessage(Func<string, string, Task> onBroadcastMessage)
         {
             connection.On("ReceiveMessage", onBroadcastMessage);
         }

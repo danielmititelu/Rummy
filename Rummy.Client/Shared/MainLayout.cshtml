@@ -5,13 +5,13 @@
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <div class="app">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @*<div class="sidebar">
+            <NavMenu />
+        </div>*@
 
     <div class="main">
         <div class="top-row d-flex flex-row-reverse">
-            <button onclick="@ActionClick" class="btn btn-dark p-2 ">@action</button>
+            <button onclick="@Logout" class="btn btn-dark p-2 ">Logout</button>
             <label id="email" class="text-dark p-2">@email</label>
         </div>
 
@@ -22,35 +22,26 @@
 </div>
 
 @functions{
-    public string action;
     public string email;
 
     protected override void OnInit()
     {
         var auth = Storage.GetItem<AuthResponse>("auth");
-        Console.WriteLine(auth == null);
+
         if (auth == null)
         {
-            action = "Login";
+            UriHelper.NavigateTo("login");
         }
         else
         {
             email = auth.Email;
-            action = "Logout";
         }
     }
 
-    void ActionClick()
+    void Logout()
     {
-        if (action == "Logout")
-        {
-            Storage.Clear();
-            email = "";
-            action = "Login";
-        }
-        else
-        {
-            UriHelper.NavigateTo("login");
-        }
+
+        Storage.Clear();
+        UriHelper.NavigateTo("login");
     }
 }

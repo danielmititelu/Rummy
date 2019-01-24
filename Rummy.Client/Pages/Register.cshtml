@@ -37,7 +37,7 @@
 
     async void RegisterClick()
     {
-        if (await AuthService.TryLogin(user))
+        if (await AuthService.TryRegister(user))
         {
             UriHelper.NavigateTo("");
         }

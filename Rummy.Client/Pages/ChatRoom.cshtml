@@ -3,15 +3,16 @@
 @inject ChatService ChatService
 
 <p>@RoomName</p>
-<div class="container">
-    <input type="text" id="message" class="form-control" bind="@message" />
-    <input type="button" id="sendMessage" value="Send" class="btn btn-primary" onclick="@SendMessage" />
-    <ul id="discussion">
-        @foreach (var message in messages)
-        {
-            <li>@message</li>
-        }
-    </ul>
+<div class="fixed-bottom">
+    <div class="row">
+        <div class="col-9" ></div>
+        <textarea class="col-3" rows="4" cols="1" readonly>@_messages</textarea>
+    </div>
+    <div class="row">
+        <div class="col-9"></div>
+        <input type="text" id="message" class="col-2" bind="@_message"/>
+        <input type="button" id="sendMessage" value="Send" class="btn btn-primary col-1" onclick="@SendMessage"/>
+    </div>
 </div>
 
 
@@ -19,25 +20,25 @@
     [Parameter]
     private string RoomName { get; set; }
 
-    string message = "";
-    IList<string> messages = new List<string>();
+    string _message = "";
+    string _messages;
 
     protected override async Task OnInitAsync()
     {
         ChatService.OnBroadcastMessage(this.OnBroadcastMessage);
-        await ChatService.JoinRoom(RoomName); 
+        await ChatService.JoinRoom(RoomName);
     }
 
     Task OnBroadcastMessage(string name, string message)
     {
-        messages.Add(name + " : " + message);
+        _messages = name + " : " + message + Environment.NewLine + _messages;
         StateHasChanged();
         return Task.CompletedTask;
     }
 
     async Task SendMessage()
     {
-        await ChatService.SendMessage(message);
-        message = "";
+        await ChatService.SendMessage(_message);
+        _message = "";
     }
 }

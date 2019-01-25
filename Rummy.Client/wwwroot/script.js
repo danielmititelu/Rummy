@@ -40,7 +40,6 @@
 window.cropImage = (i, j) => {
     var tileWidth = 32;
     var tileHeight = 48;
-    var board = document.getElementById('board');
     var canvas = document.createElement("canvas");
     //canvas.setAttribute('id', "myCanvas");
     canvas.setAttribute('width', tileWidth);
@@ -58,7 +57,7 @@ window.cropImage = (i, j) => {
         context.drawImage(imageObj, sourceX, sourceY, tileWidth, tileHeight, destX, destY, tileWidth, tileHeight);
     };
     imageObj.src = 'images/Tiles.png';
-    board.appendChild(canvas);
+    $('#board').append(canvas);
     dragElement(canvas);
     return true;
 };

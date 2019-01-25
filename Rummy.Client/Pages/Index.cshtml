@@ -9,6 +9,8 @@
 <button class="btn btn-primary" type="button" onclick="@JoinRoomAction">Join Room</button>
 <button class="btn btn-primary" type="button" onclick="@CreateRoomAction">Create Room</button>
 
+<div id="board"> </div>
+
 @functions{
     string username;
     bool firstRender = true;
@@ -24,9 +26,9 @@
         {
             firstRender = false;
 
-            await JSRuntime.Current.InvokeAsync<bool>("cropImage", 2, 2);
-            await JSRuntime.Current.InvokeAsync<bool>("cropImage", 4, 2);
-
+            //for (int i = 0; i < 5; i++)
+            //    for (int j = 0; j < 13; j++)
+            await JSRuntime.Current.InvokeAsync<bool>("cropImage", 1, 1);
         }
 
     }

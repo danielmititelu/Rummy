@@ -38,29 +38,27 @@
 };
 
 window.cropImage = (i, j) => {
-    debugger;
-    //var canvas = document.getElementById('myCanvas');
+    var tileWidth = 32;
+    var tileHeight = 48;
+    var board = document.getElementById('board');
     var canvas = document.createElement("canvas");
     //canvas.setAttribute('id', "myCanvas");
-    canvas.setAttribute('width', 32);
-    canvas.setAttribute('height', 48);
+    canvas.setAttribute('width', tileWidth);
+    canvas.setAttribute('height', tileHeight);
     var context = canvas.getContext('2d');
     var imageObj = new Image();
 
     imageObj.onload = function () {
         // draw cropped image
-        var sourceX = i*32;
-        var sourceY = j*48;
-        var sourceWidth = 32;
-        var sourceHeight = 48;
-        var destWidth = sourceWidth;
-        var destHeight = sourceHeight;
+        var sourceX = j * tileWidth;
+        var sourceY = i * tileHeight;
         var destX = 0;
         var destY = 0;
 
-        context.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+        context.drawImage(imageObj, sourceX, sourceY, tileWidth, tileHeight, destX, destY, tileWidth, tileHeight);
     };
     imageObj.src = 'images/Tiles.png';
-    document.body.appendChild(canvas);
+    board.appendChild(canvas);
     dragElement(canvas);
+    return true;
 };

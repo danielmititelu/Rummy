@@ -1,8 +1,13 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-
 canvas {
     position: absolute;
+}
+
+#board {
+    height: 100px;
+    width: 200px;
+    border-style: solid;
 }
 
 html, body {

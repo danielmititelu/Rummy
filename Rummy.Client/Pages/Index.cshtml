@@ -9,7 +9,59 @@
 <button class="btn btn-primary" type="button" onclick="@JoinRoomAction">Join Room</button>
 <button class="btn btn-primary" type="button" onclick="@CreateRoomAction">Create Room</button>
 
-<div id="board"> </div>
+<div class="board fixed-bottom">
+    <div class="row">
+        <div class="col-5"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+    </div>
+    <div class="row">
+        <div class="col-5"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+    </div>
+</div>
+
+<div class="main-row">
+    <div class="row">
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+        <div class="dropzone"></div>
+    </div>
+</div>
+
 
 @functions{
     string username;
@@ -30,7 +82,6 @@
             //    for (int j = 0; j < 13; j++)
             await JSRuntime.Current.InvokeAsync<bool>("cropImage", 1, 1);
         }
-
     }
 
     void JoinRoomAction()

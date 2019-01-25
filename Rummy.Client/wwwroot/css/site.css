@@ -1,17 +1,30 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.draggable-dropzone--occupied {
+    background: lightgreen;
+}
+
 canvas {
     position: absolute;
 }
 
-#board {
-    height: 100px;
-    width: 200px;
-    border-style: solid;
+.dropzone {
+    width: 33px;
+    height: 49px;
+    border: 1px solid black;
+}
+
+.main-row {
+    padding-top:300px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
 }
 
 .app {

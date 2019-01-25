@@ -4,6 +4,7 @@
   "description": "A game of rummy",
   "main": "script.js",
   "dependencies": {
+    "@shopify/draggable": "^1.0.0-beta.8",
     "bootstrap": "^4.2.1",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.6"

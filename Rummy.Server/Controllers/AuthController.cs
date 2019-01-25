@@ -42,6 +42,7 @@ namespace Rummy.Server.Controllers
             }
             catch (Exception e)
             {
+                //todo:add logging
                 return StatusCode(500);
             }
         }

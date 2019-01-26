@@ -74,5 +74,61 @@ namespace Rummy.Tests
             var piecesService = new PiecesService();
             Assert.IsFalse(piecesService.IsSet(pieces));
         }
+
+        [Test]
+        public void ReturnTrueGivenCorrectGroupOfThreeWithJoker()
+        {
+            var pieces = new List<Piece>
+            {
+                new Piece(0, Piece.Colors.Joker),
+                new Piece(6, Piece.Colors.Blue),
+                new Piece(6, Piece.Colors.Red)
+            };
+
+            var piecesService = new PiecesService();
+            Assert.IsTrue(piecesService.IsSet(pieces));
+        }
+
+        [Test]
+        public void ReturnTrueGivenCorrectRunOfThreeWithJoker()
+        {
+            var pieces = new List<Piece>
+            {
+                new Piece(0, Piece.Colors.Joker),
+                new Piece(2, Piece.Colors.Red),
+                new Piece(3, Piece.Colors.Red)
+            };
+
+            var piecesService = new PiecesService();
+            Assert.IsTrue(piecesService.IsSet(pieces));
+        }
+
+        [Test]
+        public void ReturnTrueGivenCorrectRunOfThreeWithJokerInTheMiddle()
+        {
+            var pieces = new List<Piece>
+            {
+                new Piece(2, Piece.Colors.Red),
+                new Piece(0, Piece.Colors.Joker),
+                new Piece(4, Piece.Colors.Red)
+            };
+
+            var piecesService = new PiecesService();
+            Assert.IsTrue(piecesService.IsSet(pieces));
+        }
+
+        [Test]
+        public void ReturnTrueGivenCorrectRunOfThreeWithJokerEdgeCase()
+        {
+            var pieces = new List<Piece>
+            {
+                new Piece(12, Piece.Colors.Red),
+                new Piece(0, Piece.Colors.Joker),
+                new Piece(1, Piece.Colors.Red)
+            };
+
+            var piecesService = new PiecesService();
+            Assert.IsTrue(piecesService.IsSet(pieces));
+        }
     }
 }

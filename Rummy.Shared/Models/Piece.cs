@@ -7,7 +7,8 @@
             Black,
             Red,
             Blue,
-            Yellow
+            Yellow,
+            Joker
         }
 
         public int Number { get; set; }

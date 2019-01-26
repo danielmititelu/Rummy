@@ -1,5 +1,4 @@
 ﻿using Rummy.Shared.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +8,11 @@ namespace Rummy.Shared.Services
     {
         public bool IsSet(IList<Piece> pieces)
         {
+            if (pieces.Count < 3)
+            {
+                return false;
+            }
+
             if (IsRun(pieces))
             {
                 return true;
@@ -24,11 +28,32 @@ namespace Rummy.Shared.Services
 
         private bool IsGroup(IList<Piece> pieces)
         {
+            if (pieces.Any(p => p.Color == Piece.Colors.Joker))
+            {
+                var piecesWithoutJoker = pieces.Where(p => p.Color != Piece.Colors.Joker).ToList();
+                return AreSameNumber(piecesWithoutJoker) && AreDifferentColors(piecesWithoutJoker);
+            }
             return AreSameNumber(pieces) && AreDifferentColors(pieces);
         }
 
-        private static bool IsRun(IList<Piece> pieces)
+        private bool IsRun(IList<Piece> pieces)
         {
+            if (pieces.Any(p => p.Color == Piece.Colors.Joker))
+            {
+                var piecesWithoutJoker = pieces.Where(p => p.Color != Piece.Colors.Joker).ToList();
+                if (AreConsecutive(piecesWithoutJoker) && AreSameColor(piecesWithoutJoker))
+                {
+                    return true;
+                }
+                else if (AreConsecutive(piecesWithoutJoker, 2) && AreSameColor(piecesWithoutJoker))
+                {
+                    return true;
+                }
+                return piecesWithoutJoker.First().Number == 12 &&
+                       piecesWithoutJoker.Last().Number == 1 &&
+                       AreSameColor(piecesWithoutJoker);
+            }
+
             var count = pieces.Count();
             if (AreSameColor(pieces))
             {
@@ -58,14 +83,25 @@ namespace Rummy.Shared.Services
             return pieces.Select(p => p.Number).Distinct().Count() == 1;
         }
 
-        private static bool AreSameColor(IList<Piece> pieces)
+        private bool AreSameColor(IList<Piece> pieces)
         {
             return pieces.Select(p => p.Color).Distinct().Count() == 1;
         }
 
-        private static bool AreConsecutive(IList<Piece> pieces)
+        private bool AreConsecutive(IList<Piece> pieces)
         {
             return !pieces.Select((p, i) => p.Number - i).Distinct().Skip(1).Any();
+        }
+
+        private bool AreConsecutive(IList<Piece> pieces, int step)
+        {
+            var temp = pieces.Select((p, j) => p.Number - j).ToList();
+            for (int i = 0; i < step - 1; i++)
+            {
+                temp = temp.Select((p, j) => p - j).ToList();
+            }
+
+            return !temp.Distinct().Skip(1).Any();
         }
     }
 }

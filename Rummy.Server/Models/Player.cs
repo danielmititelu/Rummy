@@ -7,6 +7,11 @@ namespace Rummy.Server.Models
     {
         public string ConnectionId { get; set; }
         public string RoomName { get; set; }
-        public IEnumerable<Piece> Pieces { get; set; }
+        public IList<Piece> Pieces { get; set; } 
+
+        public Player()
+        {
+            Pieces = new List<Piece>();
+        }
     }
 }

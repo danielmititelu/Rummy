@@ -26,7 +26,6 @@ namespace Rummy.Client.Services
         {
             _roomName = roomName;
             await connection.InvokeAsync("CreateRoom", roomName);
-            await connection.InvokeAsync("JoinRoom", roomName);
         }
 
         public async Task JoinRoom(string roomName)

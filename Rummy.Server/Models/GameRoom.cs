@@ -1,6 +1,7 @@
 ﻿using Rummy.Shared.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rummy.Server.Models
 {
@@ -10,30 +11,49 @@ namespace Rummy.Server.Models
         public List<Player> Players { get; set; }
         public Player CurrentPlayerTurn { get; set; }
         public string RoomName { get; set; }
+        public List<Piece> PiecesOnTable { get; set; }
 
         public void InitilizeGame()
         {
+            PiecesOnTable = new List<Piece>();
             GeneratePieces();
             SharePieces();
             RandomlyChoseFirstPlayer();
         }
 
-        public Piece DrawPiece()
+        public Piece DrawPiece(string connectionId)
         {
+            var player = Players.First(p => p.ConnectionId == connectionId);
             var random = new Random();
-
             var i = random.Next(Pieces.Count);
             var piece = Pieces[i];
             Pieces.RemoveAt(i);
-
+            player.Pieces.Append(piece);
             return piece;
         }
 
-        private IEnumerable<Piece> Draw14Pieces()
+        public void PutPieceOnTable(string connectionId, Piece piece)
+        {
+            var player = Players.First(p => p.ConnectionId == connectionId);
+            PiecesOnTable.Add(piece);
+            player.Pieces.Remove(piece);
+        }
+
+        public bool IsPlayerTurn(string connectionId)
+        {
+            var player = Players.First(p => p.ConnectionId == connectionId);
+            if (CurrentPlayerTurn.ConnectionId == player.ConnectionId)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void Draw14Pieces(string connectionId)
         {
             for (int i = 0; i <= 13; i++)
             {
-                yield return DrawPiece();
+                DrawPiece(connectionId);
             }
         }
 
@@ -48,7 +68,7 @@ namespace Rummy.Server.Models
         {
             foreach (var player in Players)
             {
-                player.Pieces = Draw14Pieces();
+                Draw14Pieces(player.ConnectionId);
             }
         }
 

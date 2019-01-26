@@ -62,7 +62,6 @@ namespace Rummy.Server
                     {
                         OnTokenValidated = context =>
                         {
-                            // Add the access_token as a claim, as we may actually need it
                             if (context.SecurityToken is JwtSecurityToken accessToken)
                             {
                                 if (context.Principal.Identity is ClaimsIdentity identity)

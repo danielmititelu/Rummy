@@ -8,7 +8,7 @@ namespace Rummy.Server.Hubs
     public class ChatHub : Hub
     {
         private readonly IMemoryCache _memoryCache;
-        private readonly string roomKey = "roomKey";
+        private readonly string roomsKey = "roomsKey";
 
         public ChatHub(IMemoryCache memoryCache)
         {
@@ -17,7 +17,7 @@ namespace Rummy.Server.Hubs
 
         public List<string> GetRooms()
         {
-            if (_memoryCache.TryGetValue<List<string>>(roomKey, out var rooms))
+            if (_memoryCache.TryGetValue<List<string>>(roomsKey, out var rooms))
             {
                 return rooms;
             }
@@ -26,12 +26,12 @@ namespace Rummy.Server.Hubs
 
         public void CreateRoom(string roomName)
         {
-            if (!_memoryCache.TryGetValue<List<string>>(roomKey, out var rooms))
+            if (!_memoryCache.TryGetValue<List<string>>(roomsKey, out var rooms))
             {
                 rooms = new List<string>();
             }
             rooms.Add(roomName);
-            _memoryCache.Set(roomKey, rooms);
+            _memoryCache.Set(roomsKey, rooms);
         }
 
         public async Task JoinRoom(string roomName)

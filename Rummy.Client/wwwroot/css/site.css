@@ -1,5 +1,22 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.Block--isDraggable:hover .BlockContent {
+    color: #0042ff;
+}
+
+.BlockWrapper {
+    background-color: aqua;
+    width: 100px;
+    height: 100px;
+    border: 1px solid black;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
 .draggable-dropzone--occupied {
     background: lightgreen;
 }
@@ -8,7 +25,7 @@ canvas {
     position: absolute;
 }
 
-.dropzone {
+.cell {
     width: 33px;
     height: 49px;
     border: 1px solid black;

@@ -28,7 +28,7 @@ namespace Rummy.Server.Models
             var i = random.Next(Pieces.Count);
             var piece = Pieces[i];
             Pieces.RemoveAt(i);
-            player.Pieces.Append(piece);
+            player.Pieces.Add(piece);
             return piece;
         }
 

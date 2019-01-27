@@ -47,7 +47,7 @@ namespace Rummy.Server.Hubs
         {
             var gameRoom = _memoryCache.Get<GameRoom>(roomName);
             gameRoom.Players.Add(new Player { ConnectionId = Context.ConnectionId });
-            _memoryCache.Set(roomsKey, gameRoom);
+            _memoryCache.Set(roomName, gameRoom);
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
         }
 
@@ -55,18 +55,18 @@ namespace Rummy.Server.Hubs
         {
             var gameRoom = _memoryCache.Get<GameRoom>(roomName);
             gameRoom.Players.RemoveAll(p => p.ConnectionId == Context.ConnectionId);
-            _memoryCache.Set(roomsKey, gameRoom);
+            _memoryCache.Set(roomName, gameRoom);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
         }
 
         public async Task SendMessageToRoom(string roomName, string user, string message)
         {
-            await Clients.Group(roomName).SendAsync("ReceiveMessage", user, message);
+            await Clients.Group(roomName).SendAsync("BroadcastMessage", user, message);
         }
 
         public async Task SendMessage(string user, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            await Clients.All.SendAsync("BroadcastMessage", user, message);
         }
 
         public async Task StartGame(string roomName)
@@ -78,7 +78,7 @@ namespace Rummy.Server.Hubs
             {
                 await Clients.Client(player.ConnectionId).SendAsync("PiecesToAddToBoard", player.Pieces);
             }
-            _memoryCache.Set(roomsKey, gameRoom);
+            _memoryCache.Set(roomName, gameRoom);
         }
 
         public async Task Draw(string roomName)
@@ -91,7 +91,7 @@ namespace Rummy.Server.Hubs
 
             var piece = gameRoom.DrawPiece(Context.ConnectionId);
             await Clients.Client(Context.ConnectionId).SendAsync("PiecesToAddToBoard", new List<Piece> { piece });
-            _memoryCache.Set(roomsKey, gameRoom);
+            _memoryCache.Set(roomName, gameRoom);
         }
 
         public async Task PutPieceOnTable(string roomName, Piece piece)
@@ -104,7 +104,7 @@ namespace Rummy.Server.Hubs
 
             gameRoom.PutPieceOnTable(Context.ConnectionId, piece);
             await Clients.Group(roomName).SendAsync("PiecesToAddToTable", piece);
-            _memoryCache.Set(roomsKey, gameRoom);
+            _memoryCache.Set(roomName, gameRoom);
         }
     }
 }

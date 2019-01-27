@@ -1,20 +1,21 @@
 ﻿@page "/chatRoom/{RoomName}"
 @using Rummy.Client.Services
+@using Rummy.Shared.Models
 @inject ChatService ChatService
 
 <p>@RoomName</p>
+<button class="btn btn-primary" type="button" onclick="@StartGame">Start game</button>
 <div class="fixed-bottom">
     <div class="row">
-        <div class="col-9" ></div>
+        <div class="col-9"></div>
         <textarea class="col-3" rows="4" cols="1" readonly>@_messages</textarea>
     </div>
     <div class="row">
         <div class="col-9"></div>
-        <input type="text" id="message" class="col-2" bind="@_message"/>
-        <input type="button" id="sendMessage" value="Send" class="btn btn-primary col-1" onclick="@SendMessage"/>
+        <input type="text" id="message" class="col-2" bind="@_message" />
+        <input type="button" id="sendMessage" value="Send" class="btn btn-primary col-1" onclick="@SendMessage" />
     </div>
 </div>
-
 
 @functions{
     [Parameter]
@@ -26,7 +27,23 @@
     protected override async Task OnInitAsync()
     {
         ChatService.OnBroadcastMessage(this.OnBroadcastMessage);
+        ChatService.OnReceivePiecesToAddToBoard(this.OnReceivePiecesToAddToBoard);
+        ChatService.OnReceivePiecesToAddToTable(this.OnReceivePiecesToAddToTable);
         await ChatService.JoinRoom(RoomName);
+    }
+
+    Task OnReceivePiecesToAddToBoard(List<Piece> pieces)
+    {
+        foreach (var piece in pieces)
+            Console.WriteLine($"{piece.Color}-{piece.Number}");
+        return Task.CompletedTask;
+    }
+
+    Task OnReceivePiecesToAddToTable(List<Piece> pieces)
+    {
+        foreach (var piece in pieces)
+            Console.WriteLine($"{piece.Color}-{piece.Number}");
+        return Task.CompletedTask;
     }
 
     Task OnBroadcastMessage(string name, string message)
@@ -40,5 +57,10 @@
     {
         await ChatService.SendMessage(_message);
         _message = "";
+    }
+
+    async Task StartGame()
+    {
+        await ChatService.StartGame();
     }
 }

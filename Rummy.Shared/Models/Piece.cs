@@ -19,5 +19,11 @@
             Number = number;
             Color = color;
         }
+
+        public Piece()
+        {
+            //Error said this class needs a public parameterless 
+            //constructor, so here it is
+        }
     }
 }

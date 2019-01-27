@@ -1,4 +1,5 @@
 ﻿using Blazor.Extensions;
+using Rummy.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,15 +40,30 @@ namespace Rummy.Client.Services
             return await connection.InvokeAsync<List<string>>("GetRooms");
         }
 
-        public void OnBroadcastMessage(Func<string, string, Task> onBroadcastMessage)
-        {
-            connection.On("ReceiveMessage", onBroadcastMessage);
-        }
-
         public async Task SendMessage(string message)
         {
             _authService.TryGetUsername(out var username);
             await connection.InvokeAsync("SendMessageToRoom", _roomName, username, message);
+        }
+
+        public async Task StartGame()
+        {
+            await connection.InvokeAsync("StartGame", _roomName);
+        }
+
+        public void OnBroadcastMessage(Func<string, string, Task> onBroadcastMessage)
+        {
+            connection.On("BroadcastMessage", onBroadcastMessage);
+        }
+
+        public void OnReceivePiecesToAddToBoard(Func<List<Piece>, Task> OnReceivePiecesToAddToBoard)
+        {
+            connection.On("PiecesToAddToBoard", OnReceivePiecesToAddToBoard);
+        }
+
+        public void OnReceivePiecesToAddToTable(Func<List<Piece>, Task> OnReceivePiecesToAddToTable)
+        {
+            connection.On("PiecesToAddToTable", OnReceivePiecesToAddToTable);
         }
     }
 }

@@ -12,10 +12,10 @@
     <div class="row">
         <div class="col-5"></div>
         <div class="cell">
-            <div>1</div>
+            <div class="piece">1</div>
         </div>
         <div class="cell">
-            <div>2</div>
+            <div class="piece">2</div>
         </div>
         <div class="cell"></div>
         <div class="cell"></div>
@@ -81,7 +81,7 @@
 
             //for (int i = 0; i < 5; i++)
             //    for (int j = 0; j < 13; j++)
-            await JSRuntime.Current.InvokeAsync<bool>("cropImage", 1, 1);
+            await JSRuntime.Current.InvokeAsync<bool>("mountDraggable", 1, 1);
         }
     }
 

@@ -1,4 +1,4 @@
-﻿window.mountDraggable = (i, j) => {
+﻿window.mountDraggable = () => {
     const containers = document.querySelectorAll('.swappable-container');
 
     const swappable = new Draggable.Swappable(containers, {
@@ -6,12 +6,13 @@
         plugins: [Draggable.Plugins.Snappable]
     });
 
-    swappable.on('drag:start', (evt) => {
-        pos = {
-            x: evt.sensorEvent.clientX,
-            y: evt.sensorEvent.clientY
-        };
-        console.log('drag start:', pos.x, pos.y);
+    swappable.on('swappable:stop', (evt) => {
+        var pieceId = evt.data.dragEvent.data.source.firstElementChild.id;
+        console.log('target:', pieceId);
+        DotNet.invokeMethodAsync('Rummy', 'EndTurnWithPiece', pieceId)
+            .then(data => {
+                console.log(data);
+            });
     });
     
     return true;

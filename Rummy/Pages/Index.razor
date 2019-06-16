@@ -1,31 +1,24 @@
 ﻿@page "/"
 @inject IJSRuntime JSRuntime
 @using Models
+@using Extensions
 
 <div class="board fixed-bottom swappable-container">
     <div class="row">
         <div class="col-5"></div>
         <button class="btn btn-success" @onclick="@AddPiece">Add piece</button>
     </div>
-    <div class="row">
-        <div class="col-5"></div>
-        @foreach (var piece in pieces)
-        {
-            <Piece Drop="@OnPieceDrop" Model="@piece"></Piece>
 
-            @*<Cell>
-                    <Piece Number="@piece.Number.ToString()" Color="red"></Piece>
-                </Cell>*@
-        }
-
-    </div>
-    <div class="row">
-        <div class="col-5"></div>
-        @for (int i = 0; i <= 13; i++)
-        {
-            <Cell />
-        }
-    </div>
+    @for (int x = 0; x < pieces.GetLength(0); ++x)
+    {
+        <div class="row">
+            <div class="col-5"></div>
+            @for (int y = 0; y < pieces.GetLength(1); ++y)
+            {
+                <Piece Drop="@OnPieceDrop" Model="@pieces[x, y]"></Piece>
+            }
+        </div>
+    }
 </div>
 
 <div class="main-row swappable-container">
@@ -39,7 +32,7 @@
 
 @code {
     bool firstRender = true;
-    List<PieceModel> pieces = new List<PieceModel>();
+    PieceModel[,] pieces = new PieceModel[2, 14];
 
     protected override async Task OnInitAsync()
     {
@@ -49,20 +42,25 @@
 
     void OnPieceDrop(PieceModel source, PieceModel target)
     {
-        var sourceIndex = pieces.IndexOf(source);
-        var targetIndex = pieces.IndexOf(target);
-        var tmp = pieces[sourceIndex];
-        pieces[sourceIndex] = pieces[targetIndex];
-        pieces[targetIndex] = tmp;
+        var (sourceX, sourceY) = pieces.CoordinatesOf(source);
+        var (targetX, targetY) = pieces.CoordinatesOf(target);
+        var tmp = pieces[sourceX, sourceY];
+        pieces[sourceX, sourceY] = pieces[targetX, targetY];
+        pieces[targetX, targetY] = tmp;
         StateHasChanged();
     }
 
     void Get14Pieces()
     {
         //get 14 pieces for testing purpose
-        for (int i = 0; i <= 14; i++)
+        for (int i = 0; i <= 13; i++)
         {
-            pieces.Add(new PieceModel(i, i, PieceModel.Colors.Blue));
+            pieces[0, i] = new PieceModel(i, i, PieceModel.Colors.Blue);
+        }
+
+        for (int i = 0; i <= 13; i++)
+        {
+            pieces[1, i] = new PieceModel(i, i, PieceModel.Colors.Black);
         }
     }
 
@@ -77,7 +75,7 @@
 
     void AddPiece()
     {
-        pieces.Add(new PieceModel(40, 4, PieceModel.Colors.Black));
+        //pieces.Add(new PieceModel(40, 4, PieceModel.Colors.Black));
     }
 
     void PiecesOnTableChange()

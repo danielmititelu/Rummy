@@ -11,9 +11,11 @@
         <div class="col-5"></div>
         @foreach (var piece in pieces)
         {
-            <Cell>
-                <Piece Number="@piece.Number.ToString()" Color="red"></Piece>
-            </Cell>
+            <Piece Drop="@OnPieceDrop" Model="@piece"></Piece>
+
+            @*<Cell>
+                    <Piece Number="@piece.Number.ToString()" Color="red"></Piece>
+                </Cell>*@
         }
 
     </div>
@@ -45,12 +47,22 @@
         Get14Pieces();
     }
 
+    void OnPieceDrop(PieceModel source, PieceModel target)
+    {
+        var sourceIndex = pieces.IndexOf(source);
+        var targetIndex = pieces.IndexOf(target);
+        var tmp = pieces[sourceIndex];
+        pieces[sourceIndex] = pieces[targetIndex];
+        pieces[targetIndex] = tmp;
+        StateHasChanged();
+    }
+
     void Get14Pieces()
     {
         //get 14 pieces for testing purpose
         for (int i = 0; i <= 14; i++)
         {
-            pieces.Add(new PieceModel(i, PieceModel.Colors.Blue));
+            pieces.Add(new PieceModel(i, i, PieceModel.Colors.Blue));
         }
     }
 
@@ -59,13 +71,13 @@
         if (firstRender)
         {
             firstRender = false;
-            await JSRuntime.InvokeAsync<bool>("mountDraggable");
+            //await JSRuntime.InvokeAsync<bool>("mountDraggable");
         }
     }
 
     void AddPiece()
     {
-        pieces.Add(new PieceModel(4, PieceModel.Colors.Black));
+        pieces.Add(new PieceModel(40, 4, PieceModel.Colors.Black));
     }
 
     void PiecesOnTableChange()

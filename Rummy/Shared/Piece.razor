@@ -1,10 +1,28 @@
-<div id="@Color-@Number" style="color:@Color" class="piece">@Number</div>
+@using Rummy.Services
+@using Models
+@inject DragAndDropService DragAndDropService
 
+<div ondragover="event.preventDefault()" @ondrop="@OnDrop">
+    <div draggable="true" @ondragstart="@OnDragStart">
+        <div style="color:@Model.Color" class="piece">@Model.Number</div>
+    </div>
+</div>
 
 @code {
-  [Parameter]
-  private string Number { get; set; }
+    [Parameter]
+    private PieceModel Model { get; set; }
 
-  [Parameter]
-  private string Color { get; set; }
+    [Parameter]
+    Action<PieceModel, PieceModel> Drop { get; set; }
+
+    void OnDrop()
+    {
+        Drop(DragAndDropService.Model, Model);
+    }
+
+    void OnDragStart()
+    {
+        // Notify the DragAndDropService what the current Data and Zone are.
+        DragAndDropService.StartDrag(Model, "");
+    }
 }

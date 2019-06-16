@@ -1,1 +1,8 @@
-<div class="cell"></div>
+<div class="cell">
+    @ChildContent
+</div>
+
+@code{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

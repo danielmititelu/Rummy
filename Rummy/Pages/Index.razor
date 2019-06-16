@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IJSRuntime JSRuntime
+@using Models
 
 <div class="board fixed-bottom swappable-container">
     <div class="row">
@@ -8,23 +9,13 @@
     </div>
     <div class="row">
         <div class="col-5"></div>
-        <div class="cell">
-            <Piece Number="12" Color="red"></Piece>
-        </div>
-        <div class="cell">
-            <Piece Number="4" Color="blue"></Piece>
-        </div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
+        @foreach (var piece in pieces)
+        {
+            <Cell>
+                <Piece Number="@piece.Number.ToString()" Color="red"></Piece>
+            </Cell>
+        }
+
     </div>
     <div class="row">
         <div class="col-5"></div>
@@ -46,10 +37,21 @@
 
 @code {
     bool firstRender = true;
+    List<PieceModel> pieces = new List<PieceModel>();
 
     protected override async Task OnInitAsync()
     {
         AppState.OnPiecesOnTableChange += PiecesOnTableChange;
+        Get14Pieces();
+    }
+
+    void Get14Pieces()
+    {
+        //get 14 pieces for testing purpose
+        for (int i = 0; i <= 14; i++)
+        {
+            pieces.Add(new PieceModel(i, PieceModel.Colors.Blue));
+        }
     }
 
     protected override async Task OnAfterRenderAsync()
@@ -57,17 +59,13 @@
         if (firstRender)
         {
             firstRender = false;
-
-            //for (int i = 0; i < 5; i++)
-            //    for (int j = 0; j < 13; j++)
             await JSRuntime.InvokeAsync<bool>("mountDraggable");
         }
     }
 
     void AddPiece()
     {
-        // var response = DraggableInterop.Test();
-        Console.WriteLine("TEst");
+        pieces.Add(new PieceModel(4, PieceModel.Colors.Black));
     }
 
     void PiecesOnTableChange()

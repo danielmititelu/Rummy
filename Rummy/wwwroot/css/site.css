@@ -87,4 +87,5 @@ canvas {
     line-height: 47px;
     font-size: 26px;
     cursor: pointer;
+    border: 1px solid black;
 }

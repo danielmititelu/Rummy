@@ -4,16 +4,16 @@
 <div class="board fixed-bottom swappable-container">
     <div class="row">
         <div class="col-5"></div>
-        <button class="btn btn-success" @onclick="@AddPiece">Add piece</button>
+        <div style="color:red">@errorMessage</div>
     </div>
 
-    @for (int x = 0; x < piecesOnTable.GetLength(0); ++x)
+    @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
     {
         <div class="row">
             <div class="col-5"></div>
-            @for (int y = 0; y < piecesOnTable.GetLength(1); ++y)
+            @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
             {
-                <Piece OnDrop="@DropPieceOnTable" Model="@piecesOnTable[x, y]"></Piece>
+                <PieceComponent OnDrop="@DropPieceOnTable" Model="@piecesOnBoard[x, y]"></PieceComponent>
             }
 
         </div>
@@ -24,15 +24,16 @@
     <div class="row">
         @foreach (var piece in piecesToDraw)
         {
-            <Piece OnDrop="@DropPiece" Model="@piece"></Piece>
+            <PieceComponent OnDrop="@DropPiece" Model="@piece"></PieceComponent>
         }
     </div>
 </div>
 
 @code {
-    PieceModel[,] piecesOnTable = new PieceModel[2, 14];
+    PieceModel[,] piecesOnBoard = new PieceModel[2, 14];
     List<PieceModel> piecesToDraw = new List<PieceModel>();
-    List<PieceModel> piecesDown = new List<PieceModel>();
+    List<PieceModel> piecesOnTable = new List<PieceModel>();
+    string errorMessage = "";
 
     protected override async Task OnInitAsync()
     {
@@ -42,6 +43,14 @@
 
     void DropPieceOnTable(PieceModel source, PieceModel target)
     {
+        if (target.Type != PieceModel.Types.Empty &&
+            source.Location == PieceModel.Locations.PiecesToDraw)
+        {
+            errorMessage = "You cannot put in the same place as another piece";
+            StateHasChanged();
+            return;
+        }
+
         var tmpX = source.X;
         var tmpY = source.Y;
         var tmpLoc = source.Location;
@@ -54,7 +63,7 @@
 
         if (source.Location == PieceModel.Locations.Board)
         {
-            piecesOnTable[source.Y, source.X] = source;
+            piecesOnBoard[source.Y, source.X] = source;
         }
 
         if (source.Location == PieceModel.Locations.PiecesToDraw)
@@ -64,7 +73,7 @@
 
         if (target.Location == PieceModel.Locations.Board)
         {
-            piecesOnTable[target.Y, target.X] = target;
+            piecesOnBoard[target.Y, target.X] = target;
         }
 
         if (target.Location == PieceModel.Locations.PiecesToDraw)
@@ -82,13 +91,13 @@
         //get 14 pieces for testing purpose
         for (int i = 0; i <= 13; i++)
         {
-            piecesOnTable[0, i] = new PieceModel(i, PieceModel.Colors.Blue,
+            piecesOnBoard[0, i] = new PieceModel(i, PieceModel.Colors.Blue,
                 PieceModel.Locations.Board, i, 0);
         }
 
         for (int i = 0; i <= 13; i++)
         {
-            piecesOnTable[1, i] = new PieceModel(PieceModel.Types.Empty,
+            piecesOnBoard[1, i] = new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.Board, i, 1);
         }
     }
@@ -100,10 +109,5 @@
             piecesToDraw.Add(new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.PiecesToDraw, i));
         }
-    }
-
-    void AddPiece()
-    {
-        //pieces.Add(new PieceModel(40, 4, PieceModel.Colors.Black));
     }
 }

@@ -50,5 +50,17 @@
             Location = location;
             Type = type;
         }
+
+        public PieceModel(int number, Colors color)
+        {
+            Number = number;
+            Color = color;
+            Type = Types.Normal;
+        }
+
+        public PieceModel(Types type)
+        {
+            Type = type;
+        }
     }
 }

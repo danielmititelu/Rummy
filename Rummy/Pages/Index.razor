@@ -1,7 +1,5 @@
 ﻿@page "/"
-@inject IJSRuntime JSRuntime
 @using Models
-@using Extensions
 
 <div class="board fixed-bottom swappable-container">
     <div class="row">
@@ -9,13 +7,13 @@
         <button class="btn btn-success" @onclick="@AddPiece">Add piece</button>
     </div>
 
-    @for (int x = 0; x < pieces.GetLength(0); ++x)
+    @for (int x = 0; x < piecesOnTable.GetLength(0); ++x)
     {
         <div class="row">
             <div class="col-5"></div>
-            @for (int y = 0; y < pieces.GetLength(1); ++y)
+            @for (int y = 0; y < piecesOnTable.GetLength(1); ++y)
             {
-                <Piece OnDrop="@PieceDrop" Model="@pieces[x, y]"></Piece>
+                <Piece OnDrop="@DropPieceOnTable" Model="@piecesOnTable[x, y]"></Piece>
             }
 
         </div>
@@ -24,39 +22,83 @@
 
 <div class="main-row swappable-container">
     <div class="row">
-            <Cell />
+        @foreach (var piece in piecesToDraw)
+        {
+            <Piece OnDrop="@DropPiece" Model="@piece"></Piece>
+        }
     </div>
 </div>
 
 @code {
-    PieceModel[,] pieces = new PieceModel[2, 14];
+    PieceModel[,] piecesOnTable = new PieceModel[2, 14];
+    List<PieceModel> piecesToDraw = new List<PieceModel>();
+    List<PieceModel> piecesDown = new List<PieceModel>();
 
     protected override async Task OnInitAsync()
     {
         Get14Pieces();
+        GetPiecesToDraw();
     }
 
-    void PieceDrop(PieceModel source, PieceModel target)
+    void DropPieceOnTable(PieceModel source, PieceModel target)
     {
-        var (sourceX, sourceY) = pieces.CoordinatesOf(source);
-        var (targetX, targetY) = pieces.CoordinatesOf(target);
-        var tmp = pieces[sourceX, sourceY];
-        pieces[sourceX, sourceY] = pieces[targetX, targetY];
-        pieces[targetX, targetY] = tmp;
+        var tmpX = source.X;
+        var tmpY = source.Y;
+        var tmpLoc = source.Location;
+        source.X = target.X;
+        source.Y = target.Y;
+        source.Location = target.Location;
+        target.X = tmpX;
+        target.Y = tmpY;
+        target.Location = tmpLoc;
+
+        if (source.Location == PieceModel.Locations.Board)
+        {
+            piecesOnTable[source.Y, source.X] = source;
+        }
+
+        if (source.Location == PieceModel.Locations.PiecesToDraw)
+        {
+            piecesToDraw[source.X] = source;
+        }
+
+        if (target.Location == PieceModel.Locations.Board)
+        {
+            piecesOnTable[target.Y, target.X] = target;
+        }
+
+        if (target.Location == PieceModel.Locations.PiecesToDraw)
+        {
+            piecesToDraw[target.X] = target;
+        }
+
         StateHasChanged();
     }
+
+    void DropPiece(PieceModel source, PieceModel target) { }
 
     void Get14Pieces()
     {
         //get 14 pieces for testing purpose
         for (int i = 0; i <= 13; i++)
         {
-            pieces[0, i] = new PieceModel(i, i, PieceModel.Colors.Blue);
+            piecesOnTable[0, i] = new PieceModel(i, PieceModel.Colors.Blue,
+                PieceModel.Locations.Board, i, 0);
         }
 
         for (int i = 0; i <= 13; i++)
         {
-            pieces[1, i] = new PieceModel(i, i, PieceModel.Colors.Black);
+            piecesOnTable[1, i] = new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.Board, i, 1);
+        }
+    }
+
+    void GetPiecesToDraw()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            piecesToDraw.Add(new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.PiecesToDraw, i));
         }
     }
 

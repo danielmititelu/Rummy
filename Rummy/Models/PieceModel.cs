@@ -7,19 +7,48 @@
             Black,
             Red,
             Blue,
-            Yellow,
+            Yellow
+        }
+
+        public enum Types
+        {
+            Empty,
+            Normal,
             Joker
         }
 
-        public int Id { get; set; }
+        public enum Locations
+        {
+            Board,
+            PiecesToDraw,
+            Table
+        }
+
+        public int X { get; set; }
+        public int Y { get; set; }
+        public Locations Location { get; set; }
         public int Number { get; set; }
         public Colors Color { get; set; }
+        public Types Type { get; set; }
 
-        public PieceModel(int id, int number, Colors color)
+        public PieceModel(int number, Colors color,  Locations location,
+             int x, int y = 0)
         {
-            Id = id;
+            X = x;
+            Y = y;
+            Location = location;
             Number = number;
             Color = color;
+            Type = Types.Normal;
+        }
+
+        public PieceModel(Types type, Locations location,
+            int x, int y = 0)
+        {
+            X = x;
+            Y = y;
+            Location = location;
+            Type = type;
         }
     }
 }

@@ -4,7 +4,20 @@
 
 <div ondragover="event.preventDefault()" @ondrop="@Drop">
     <div draggable="true" @ondragstart="@DragStart">
-        <div style="color:@Model.Color" class="piece">@Model.Number</div>
+        @if (Model.Type == PieceModel.Types.Normal)
+        {
+            <div style="color:@Model.Color" class="piece">@Model.Number</div>
+        }
+
+        @if (Model.Type == PieceModel.Types.Joker)
+        {
+            <div class="piece">:)</div>
+        }
+
+        @if (Model.Type == PieceModel.Types.Empty)
+        {
+            <div class="piece">R</div>
+        }
     </div>
 </div>
 
@@ -22,7 +35,6 @@
 
     void DragStart()
     {
-        // Notify the DragAndDropService what the current Data and Zone are.
         DragAndDropService.StartDrag(Model, "");
     }
 }

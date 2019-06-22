@@ -15,32 +15,28 @@
             <div class="col-5"></div>
             @for (int y = 0; y < pieces.GetLength(1); ++y)
             {
-                <Piece Drop="@OnPieceDrop" Model="@pieces[x, y]"></Piece>
+                <Piece OnDrop="@PieceDrop" Model="@pieces[x, y]"></Piece>
             }
+
         </div>
     }
 </div>
 
 <div class="main-row swappable-container">
     <div class="row">
-        @for (int i = 0; i < AppState.PiecesOnTable.Count + 1; i++)
-        {
             <Cell />
-        }
     </div>
 </div>
 
 @code {
-    bool firstRender = true;
     PieceModel[,] pieces = new PieceModel[2, 14];
 
     protected override async Task OnInitAsync()
     {
-        AppState.OnPiecesOnTableChange += PiecesOnTableChange;
         Get14Pieces();
     }
 
-    void OnPieceDrop(PieceModel source, PieceModel target)
+    void PieceDrop(PieceModel source, PieceModel target)
     {
         var (sourceX, sourceY) = pieces.CoordinatesOf(source);
         var (targetX, targetY) = pieces.CoordinatesOf(target);
@@ -64,23 +60,8 @@
         }
     }
 
-    protected override async Task OnAfterRenderAsync()
-    {
-        if (firstRender)
-        {
-            firstRender = false;
-            //await JSRuntime.InvokeAsync<bool>("mountDraggable");
-        }
-    }
-
     void AddPiece()
     {
         //pieces.Add(new PieceModel(40, 4, PieceModel.Colors.Black));
-    }
-
-    void PiecesOnTableChange()
-    {
-        Console.WriteLine("Added piece:" + AppState.PiecesOnTable.Last());
-        StateHasChanged();
     }
 }

@@ -2,8 +2,8 @@
 @using Models
 @inject DragAndDropService DragAndDropService
 
-<div ondragover="event.preventDefault()" @ondrop="@OnDrop">
-    <div draggable="true" @ondragstart="@OnDragStart">
+<div ondragover="event.preventDefault()" @ondrop="@Drop">
+    <div draggable="true" @ondragstart="@DragStart">
         <div style="color:@Model.Color" class="piece">@Model.Number</div>
     </div>
 </div>
@@ -13,14 +13,14 @@
     private PieceModel Model { get; set; }
 
     [Parameter]
-    Action<PieceModel, PieceModel> Drop { get; set; }
+    Action<PieceModel, PieceModel> OnDrop { get; set; }
 
-    void OnDrop()
+    void Drop()
     {
-        Drop(DragAndDropService.Model, Model);
+        OnDrop(DragAndDropService.Model, Model);
     }
 
-    void OnDragStart()
+    void DragStart()
     {
         // Notify the DragAndDropService what the current Data and Zone are.
         DragAndDropService.StartDrag(Model, "");

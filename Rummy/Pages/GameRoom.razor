@@ -1,0 +1,113 @@
+@page "/gameroom"
+@using Models
+
+<div class="board fixed-bottom swappable-container">
+    <div class="row">
+        <div class="col-5"></div>
+        <div style="color:red">@errorMessage</div>
+    </div>
+
+    @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
+    {
+        <div class="row">
+            <div class="col-5"></div>
+            @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
+            {
+                <PieceComponent OnDrop="@DropPieceOnTable" Model="@piecesOnBoard[x, y]"></PieceComponent>
+            }
+
+        </div>
+    }
+</div>
+
+<div class="main-row swappable-container">
+    <div class="row">
+        @foreach (var piece in piecesToDraw)
+        {
+            <PieceComponent OnDrop="@DropPiece" Model="@piece"></PieceComponent>
+        }
+    </div>
+</div>
+
+@code {
+    PieceModel[,] piecesOnBoard = new PieceModel[2, 14];
+    List<PieceModel> piecesToDraw = new List<PieceModel>();
+    List<PieceModel> piecesOnTable = new List<PieceModel>();
+    string errorMessage = "";
+
+    protected override async Task OnInitAsync()
+    {
+        Get14Pieces();
+        GetPiecesToDraw();
+    }
+
+    void DropPieceOnTable(PieceModel source, PieceModel target)
+    {
+        if (target.Type != PieceModel.Types.Empty &&
+            source.Location == PieceModel.Locations.PiecesToDraw)
+        {
+            errorMessage = "You cannot put in the same place as another piece";
+            StateHasChanged();
+            return;
+        }
+
+        var tmpX = source.X;
+        var tmpY = source.Y;
+        var tmpLoc = source.Location;
+        source.X = target.X;
+        source.Y = target.Y;
+        source.Location = target.Location;
+        target.X = tmpX;
+        target.Y = tmpY;
+        target.Location = tmpLoc;
+
+        if (source.Location == PieceModel.Locations.Board)
+        {
+            piecesOnBoard[source.Y, source.X] = source;
+        }
+
+        if (source.Location == PieceModel.Locations.PiecesToDraw)
+        {
+            piecesToDraw[source.X] = source;
+        }
+
+        if (target.Location == PieceModel.Locations.Board)
+        {
+            piecesOnBoard[target.Y, target.X] = target;
+        }
+
+        if (target.Location == PieceModel.Locations.PiecesToDraw)
+        {
+            piecesToDraw[target.X] = target;
+        }
+
+        StateHasChanged();
+    }
+
+    void DropPiece(PieceModel source, PieceModel target) { }
+
+    void Get14Pieces()
+    {
+        //get 14 pieces for testing purpose
+        for (int i = 0; i <= 13; i++)
+        {
+            piecesOnBoard[0, i] = new PieceModel(i, PieceModel.Colors.Blue,
+                PieceModel.Locations.Board, i, 0);
+        }
+
+        for (int i = 0; i <= 13; i++)
+        {
+            piecesOnBoard[1, i] = new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.Board, i, 1);
+        }
+    }
+
+    void GetPiecesToDraw()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            piecesToDraw.Add(new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.PiecesToDraw, i));
+        }
+    }
+}

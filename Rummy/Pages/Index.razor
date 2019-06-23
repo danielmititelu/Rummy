@@ -1,113 +1,68 @@
 ﻿@page "/"
-@using Models
+@using Services
+@inject IUriHelper UriHelper
 
-<div class="board fixed-bottom swappable-container">
-    <div class="row">
-        <div class="col-5"></div>
-        <div style="color:red">@errorMessage</div>
-    </div>
-
-    @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
-    {
+<AuthorizeView>
+    <Authorized>
         <div class="row">
-            <div class="col-5"></div>
-            @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
-            {
-                <PieceComponent OnDrop="@DropPieceOnTable" Model="@piecesOnBoard[x, y]"></PieceComponent>
-            }
-
+            <select @bind="@selectedRoom" class="form-control" multiple>
+                @foreach (var room in rooms)
+                {
+                    <option value="@room">@room</option>
+                }
+            </select>
         </div>
-    }
-</div>
+        <div class="row">
+            <button class="btn btn-primary" @onclick="@JoinRoom">Join Room</button>
+        </div>
+        <div class="row">
+            <input class="form-control" @bind="@RoomName" />
+        </div>
+        <div class="row">
+            <button class="btn btn-primary" @onclick="@CreateRoom">Create Room</button>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        Log in!
+    </NotAuthorized>
+</AuthorizeView>
 
-<div class="main-row swappable-container">
-    <div class="row">
-        @foreach (var piece in piecesToDraw)
-        {
-            <PieceComponent OnDrop="@DropPiece" Model="@piece"></PieceComponent>
-        }
-    </div>
-</div>
 
 @code {
-    PieceModel[,] piecesOnBoard = new PieceModel[2, 14];
-    List<PieceModel> piecesToDraw = new List<PieceModel>();
-    List<PieceModel> piecesOnTable = new List<PieceModel>();
-    string errorMessage = "";
+    List<string>
+    rooms = new List<string> { "asd", "qwe" };
+    string selectedRoom;
+    public string Message { get; set; }
+    public string RoomName { get; set; }
 
     protected override async Task OnInitAsync()
     {
-        Get14Pieces();
-        GetPiecesToDraw();
+        RoomState.OnRoomAdded += RoomAdded;
     }
 
-    void DropPieceOnTable(PieceModel source, PieceModel target)
+    void RoomAdded()
     {
-        if (target.Type != PieceModel.Types.Empty &&
-            source.Location == PieceModel.Locations.PiecesToDraw)
-        {
-            errorMessage = "You cannot put in the same place as another piece";
-            StateHasChanged();
-            return;
-        }
-
-        var tmpX = source.X;
-        var tmpY = source.Y;
-        var tmpLoc = source.Location;
-        source.X = target.X;
-        source.Y = target.Y;
-        source.Location = target.Location;
-        target.X = tmpX;
-        target.Y = tmpY;
-        target.Location = tmpLoc;
-
-        if (source.Location == PieceModel.Locations.Board)
-        {
-            piecesOnBoard[source.Y, source.X] = source;
-        }
-
-        if (source.Location == PieceModel.Locations.PiecesToDraw)
-        {
-            piecesToDraw[source.X] = source;
-        }
-
-        if (target.Location == PieceModel.Locations.Board)
-        {
-            piecesOnBoard[target.Y, target.X] = target;
-        }
-
-        if (target.Location == PieceModel.Locations.PiecesToDraw)
-        {
-            piecesToDraw[target.X] = target;
-        }
-
-        StateHasChanged();
+        rooms = RoomState.Rooms;
+        Invoke(() => StateHasChanged());
     }
 
-    void DropPiece(PieceModel source, PieceModel target) { }
-
-    void Get14Pieces()
+    void SendMessage()
     {
-        //get 14 pieces for testing purpose
-        for (int i = 0; i <= 13; i++)
-        {
-            piecesOnBoard[0, i] = new PieceModel(i, PieceModel.Colors.Blue,
-                PieceModel.Locations.Board, i, 0);
-        }
-
-        for (int i = 0; i <= 13; i++)
-        {
-            piecesOnBoard[1, i] = new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.Board, i, 1);
-        }
+        RoomState.Message(Message);
+        Message = "";
     }
 
-    void GetPiecesToDraw()
+    void CreateRoom()
     {
-        for (int i = 0; i < 10; i++)
+        RoomState.AddRoom(RoomName);
+        UriHelper.NavigateTo($"/waitingRoom/{RoomName}");
+    }
+
+    void JoinRoom()
+    {
+        if (selectedRoom != null)
         {
-            piecesToDraw.Add(new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.PiecesToDraw, i));
+            UriHelper.NavigateTo($"/waitingRoom/{selectedRoom}");
         }
     }
 }

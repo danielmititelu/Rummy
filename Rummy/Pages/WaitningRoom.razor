@@ -1,0 +1,59 @@
+@page "/waitingRoom/{RoomName}"
+@using Models
+@using Services
+
+<AuthorizeView>
+    <Authorized>
+        <div>
+            <h4>@RoomName</h4>
+            @foreach (var message in messages)
+            {
+                <div>@message</div>
+            }
+
+            <input @bind="@Message" />
+            <button @onclick="@SendMessage">Send message</button>
+            <div></div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        Log in!
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    [Parameter]
+    private string RoomName { get; set; }
+
+    List<string>
+    messages = new List<string>();
+    string userName;
+    public string Message { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        RoomState.OnMessageReceive += MessageReceive;
+        messages = RoomState.Messages;
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            userName = user.Identity.Name;
+        }
+    }
+
+    void MessageReceive()
+    {
+        messages = RoomState.Messages;
+        Invoke(() => StateHasChanged());
+    }
+
+    void SendMessage()
+    {
+        RoomState.Message($"{userName}: {Message}");
+        Message = "";
+    }
+}

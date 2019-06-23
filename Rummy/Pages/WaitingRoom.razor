@@ -1,5 +1,4 @@
 @page "/waitingRoom/{RoomName}"
-@using Models
 @using Services
 
 <AuthorizeView>
@@ -35,8 +34,8 @@
 
     protected override async Task OnInitAsync()
     {
-        RoomState.OnMessageReceive += MessageReceive;
-        messages = RoomState.Messages;
+        RoomState.Rooms[RoomName].OnMessageReceive += MessageReceive;
+        messages = RoomState.Rooms[RoomName].Messages;
         var authState = await authenticationStateTask;
         var user = authState.User;
         if (user.Identity.IsAuthenticated)
@@ -47,13 +46,13 @@
 
     void MessageReceive()
     {
-        messages = RoomState.Messages;
+        messages = RoomState.Rooms[RoomName].Messages;
         Invoke(() => StateHasChanged());
     }
 
     void SendMessage()
     {
-        RoomState.Message($"{userName}: {Message}");
+        RoomState.Rooms[RoomName].Message($"{userName}: {Message}");
         Message = "";
     }
 }

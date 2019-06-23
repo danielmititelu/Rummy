@@ -5,23 +5,23 @@ namespace Rummy.Services
 {
     public static class RoomState
     {
-        // To do: Isolate rooms to receive messages only from the players that are in that room 
-        public static List<string> Rooms { get; set; } = new List<string>();
-        public static List<string> Messages { get; set; } = new List<string>();
+        public static Dictionary<string, GameRoomState> Rooms { get; set; } =
+            new Dictionary<string, GameRoomState>();
 
-        public static event Action OnMessageReceive;
         public static event Action OnRoomAdded;
 
-        public static void Message(string message)
+        public static void AddRoom(string roomName, string playerName)
         {
-            Messages.Add(message);
-            OnMessageReceive.Invoke();
+            Rooms.Add(roomName, new GameRoomState
+            {
+                Players = new List<string> { playerName }
+            });
+            OnRoomAdded.Invoke();
         }
 
-        public static void AddRoom(string roomName)
+        public static void JoinRoom(string roomName, string playerName)
         {
-            Rooms.Add(roomName);
-            OnRoomAdded.Invoke();
+            Rooms[roomName].Players.Add(playerName);
         }
     }
 }

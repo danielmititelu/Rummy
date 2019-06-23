@@ -29,32 +29,37 @@
 
 
 @code {
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    string userName;
     List<string>
     rooms = new List<string> { "asd", "qwe" };
     string selectedRoom;
-    public string Message { get; set; }
     public string RoomName { get; set; }
 
     protected override async Task OnInitAsync()
     {
         RoomState.OnRoomAdded += RoomAdded;
+        rooms = RoomState.Rooms.Keys.ToList();
+
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            userName = user.Identity.Name;
+        }
     }
 
     void RoomAdded()
     {
-        rooms = RoomState.Rooms;
+        rooms = RoomState.Rooms.Keys.ToList();
         Invoke(() => StateHasChanged());
-    }
-
-    void SendMessage()
-    {
-        RoomState.Message(Message);
-        Message = "";
     }
 
     void CreateRoom()
     {
-        RoomState.AddRoom(RoomName);
+        RoomState.AddRoom(RoomName, userName);
         UriHelper.NavigateTo($"/waitingRoom/{RoomName}");
     }
 
@@ -62,6 +67,7 @@
     {
         if (selectedRoom != null)
         {
+            RoomState.JoinRoom(selectedRoom, userName);
             UriHelper.NavigateTo($"/waitingRoom/{selectedRoom}");
         }
     }

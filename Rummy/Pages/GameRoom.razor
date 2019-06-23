@@ -1,4 +1,4 @@
-@page "/gameroom"
+@page "/gameRoom/{RoomName}"
 @using Models
 
 <div class="board fixed-bottom swappable-container">
@@ -30,6 +30,9 @@
 </div>
 
 @code {
+    [Parameter]
+    private string RoomName { get; set; }
+
     PieceModel[,] piecesOnBoard = new PieceModel[2, 14];
     List<PieceModel> piecesToDraw = new List<PieceModel>();
     List<PieceModel> piecesOnTable = new List<PieceModel>();

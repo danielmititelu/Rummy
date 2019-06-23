@@ -35,7 +35,5 @@ namespace Rummy.Services
         {
 
         }
-
-
     }
 }

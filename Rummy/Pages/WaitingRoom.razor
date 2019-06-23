@@ -12,7 +12,12 @@
 
             <input @bind="@Message" />
             <button class="btn btn-primary" @onclick="@SendMessage">Send message</button>
-            <div></div>
+
+            <h3>Players:</h3>
+            @foreach (var player in players)
+            {
+                <div>@player</div>
+            }
         </div>
     </Authorized>
     <NotAuthorized>
@@ -27,15 +32,22 @@
     [Parameter]
     private string RoomName { get; set; }
 
-    List<string>
-    messages = new List<string>();
+    List<string> messages = new List<string>();
+    List<string> players = new List<string>();
     string userName;
     public string Message { get; set; }
 
+    GameRoomState room;
+
     protected override async Task OnInitAsync()
     {
-        RoomState.Rooms[RoomName].OnMessageReceive += MessageReceive;
+        room = RoomState.Rooms[RoomName];
+        room.OnMessageReceive += MessageReceived;
         messages = RoomState.Rooms[RoomName].Messages;
+
+        room.OnPlayerJoin += PlayerJoined;
+        players = room.Players;
+
         var authState = await authenticationStateTask;
         var user = authState.User;
         if (user.Identity.IsAuthenticated)
@@ -44,15 +56,21 @@
         }
     }
 
-    void MessageReceive()
+    void MessageReceived()
     {
-        messages = RoomState.Rooms[RoomName].Messages;
+        messages = room.Messages;
+        Invoke(() => StateHasChanged());
+    }
+
+    void PlayerJoined()
+    {
+        players = room.Players;
         Invoke(() => StateHasChanged());
     }
 
     void SendMessage()
     {
-        RoomState.Rooms[RoomName].Message($"{userName}: {Message}");
+        room.Message($"{userName}: {Message}");
         Message = "";
     }
 }

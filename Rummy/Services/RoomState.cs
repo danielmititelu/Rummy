@@ -21,7 +21,7 @@ namespace Rummy.Services
 
         public static void JoinRoom(string roomName, string playerName)
         {
-            Rooms[roomName].Players.Add(playerName);
+            Rooms[roomName].AddPlayer(playerName);
         }
     }
 }

@@ -62,5 +62,10 @@
         {
             Type = type;
         }
+
+        public PieceModel ShallowCopy()
+        {
+            return (PieceModel)this.MemberwiseClone();
+        }
     }
 }

@@ -8,30 +8,30 @@
     <div>@player</div>
 }
 
-<div class="board fixed-bottom swappable-container">
-    <div class="row">
-        <div class="col-5"></div>
-        <div style="color:red">@errorMessage</div>
-    </div>
+<div class="fixed-bottom">
+    <div class="board">
 
-    @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
-    {
         <div class="row">
-            <div class="col-5"></div>
-            @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
-            {
-                <PieceComponent OnDrop="@DropPieceOnTable" Model="@piecesOnBoard[x, y]"></PieceComponent>
-            }
-
+            <div style="color:red">@errorMessage</div>
         </div>
-    }
+
+        @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
+        {
+            <div class="row">
+                @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
+                {
+                    <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]"></PieceComponent>
+                }
+            </div>
+        }
+    </div>
 </div>
 
-<div class="main-row swappable-container">
+<div class="main-row">
     <div class="row">
-        @foreach (var piece in piecesToDraw)
+        @foreach (var piece in piecesOnTable)
         {
-            <PieceComponent OnDrop="@DropPiece" Model="@piece"></PieceComponent>
+            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece"></PieceComponent>
         }
     </div>
 </div>
@@ -51,11 +51,17 @@
     {
         room = RoomState.Rooms[RoomName];
         players = room.Players;
+
+        piecesOnTable = new List<PieceModel>
+{
+            new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.Board, 0)
+        };
+
         Get14Pieces();
-        GetPiecesToDraw();
     }
 
-    void DropPieceOnTable(PieceModel source, PieceModel target)
+    void DropPieceOnBoard(PieceModel source, PieceModel target)
     {
         if (target.Type != PieceModel.Types.Empty &&
             source.Location == PieceModel.Locations.PiecesToDraw)
@@ -100,6 +106,26 @@
 
     void DropPiece(PieceModel source, PieceModel target) { }
 
+    void DropPieceOnTable(PieceModel source, PieceModel target)
+    {
+        if (source.Location != PieceModel.Locations.Board)
+        {
+            errorMessage = "You must put a pice from the board to the table";
+            return;
+        }
+
+        if (source.Type == PieceModel.Types.Empty)
+        {
+            return;
+        }
+
+        var tmp = source.ShallowCopy();
+        piecesOnTable.Insert(piecesOnTable.Count - 1, tmp);
+        source.Type = PieceModel.Types.Empty;
+        source.Number = 0;
+        StateHasChanged();
+    }
+
     void Get14Pieces()
     {
         //get 14 pieces for testing purpose
@@ -113,15 +139,6 @@
         {
             piecesOnBoard[1, i] = new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.Board, i, 1);
-        }
-    }
-
-    void GetPiecesToDraw()
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            piecesToDraw.Add(new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.PiecesToDraw, i));
         }
     }
 }

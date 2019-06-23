@@ -73,7 +73,7 @@ canvas {
 }
 
 .main-row {
-    padding-top: 300px;
+    margin: auto;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -90,4 +90,13 @@ canvas {
     font-size: 26px;
     cursor: pointer;
     border: 1px solid black;
+}
+
+.fixed-bottom {
+    display: flex;
+}
+
+.board {
+    margin-left: auto;
+    margin-right: auto;
 }

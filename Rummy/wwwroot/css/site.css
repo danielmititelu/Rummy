@@ -39,8 +39,6 @@ app {
 }
 
 
-
-
 .Block--isDraggable:hover .BlockContent {
     color: #0042ff;
 }
@@ -99,4 +97,11 @@ canvas {
 .board {
     margin-left: auto;
     margin-right: auto;
+}
+
+.draw-piece {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

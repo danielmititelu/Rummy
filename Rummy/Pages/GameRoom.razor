@@ -8,6 +8,22 @@
     <div>@player</div>
 }
 
+
+<div class="main-row">
+    <div class="row">
+        @foreach (var piece in piecesOnTable)
+        {
+            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece"></PieceComponent>
+        }
+    </div>
+</div>
+<br />
+
+<div class="draw-piece">
+    <div>Draw here:</div>
+    <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece"></PieceComponent>
+</div>
+
 <div class="fixed-bottom">
     <div class="board">
 
@@ -27,18 +43,14 @@
     </div>
 </div>
 
-<div class="main-row">
-    <div class="row">
-        @foreach (var piece in piecesOnTable)
-        {
-            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece"></PieceComponent>
-        }
-    </div>
-</div>
 
 @code {
     [Parameter]
     private string RoomName { get; set; }
+
+    //to do: remove this:
+    PieceModel drawPiece = new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.PiecesToDraw, 0);
 
     PieceModel[,] piecesOnBoard = new PieceModel[2, 14];
     List<PieceModel> piecesToDraw = new List<PieceModel>();
@@ -67,6 +79,15 @@
             source.Location == PieceModel.Locations.PiecesToDraw)
         {
             errorMessage = "You cannot put in the same place as another piece";
+            StateHasChanged();
+            return;
+        }
+
+        if (source.Location == PieceModel.Locations.PiecesToDraw)
+        {
+            target.Number = 5;
+            target.Color = PieceModel.Colors.Red;
+            target.Type = PieceModel.Types.Normal;
             StateHasChanged();
             return;
         }
@@ -104,13 +125,13 @@
         StateHasChanged();
     }
 
-    void DropPiece(PieceModel source, PieceModel target) { }
+    void EmptyDropPiece(PieceModel source, PieceModel target) { }
 
     void DropPieceOnTable(PieceModel source, PieceModel target)
     {
         if (source.Location != PieceModel.Locations.Board)
         {
-            errorMessage = "You must put a pice from the board to the table";
+            errorMessage = "You must put a piece from the board to the table";
             return;
         }
 

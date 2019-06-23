@@ -1,5 +1,6 @@
 @page "/waitingRoom/{RoomName}"
 @using Services
+@inject IUriHelper UriHelper
 
 <AuthorizeView>
     <Authorized>
@@ -18,6 +19,7 @@
             {
                 <div>@player</div>
             }
+            <button class="btn btn-primary" @onclick="@StartGame">Start game</button>
         </div>
     </Authorized>
     <NotAuthorized>
@@ -48,6 +50,8 @@
         room.OnPlayerJoin += PlayerJoined;
         players = room.Players;
 
+        room.OnStartGame += GameStarted;
+
         var authState = await authenticationStateTask;
         var user = authState.User;
         if (user.Identity.IsAuthenticated)
@@ -72,5 +76,15 @@
     {
         room.Message($"{userName}: {Message}");
         Message = "";
+    }
+
+    public void GameStarted()
+    {
+        UriHelper.NavigateTo($"/gameRoom/{RoomName}");
+    }
+
+    void StartGame()
+    {
+        room.StartGame();
     }
 }

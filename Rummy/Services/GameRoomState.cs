@@ -10,6 +10,7 @@ namespace Rummy.Services
 
         public event Action OnMessageReceive;
         public event Action OnPlayerJoin;
+        public event Action OnStartGame;
 
         public void Message(string message)
         {
@@ -21,6 +22,11 @@ namespace Rummy.Services
         {
             Players.Add(playerName);
             OnPlayerJoin.Invoke();
+        }
+
+        public void StartGame()
+        {
+            OnStartGame.Invoke();
         }
     }
 }

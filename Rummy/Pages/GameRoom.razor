@@ -57,11 +57,11 @@
     List<PieceModel> piecesOnTable = new List<PieceModel>();
     string errorMessage = "";
     List<string> players = new List<string>();
-    GameRoomState room;
+    RoomState room;
 
     protected override async Task OnInitAsync()
     {
-        room = RoomState.Rooms[RoomName];
+        room = AllRoomsState.Rooms[RoomName];
         players = room.Players;
 
         piecesOnTable = new List<PieceModel>

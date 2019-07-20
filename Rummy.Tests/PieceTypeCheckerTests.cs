@@ -1,11 +1,11 @@
 using NUnit.Framework;
 using Rummy.Models;
-using Rummy.Services.RummyEngine;
+using Rummy.Services;
 using System.Collections.Generic;
 
 namespace Tests
 {
-    public class Tests
+    public class PieceTypeCheckerTests
     {
         [TestCase(1, 2, 3, PieceModel.Colors.Black)]
         [TestCase(11, 12, 13, PieceModel.Colors.Blue)]

@@ -39,13 +39,13 @@
     string userName;
     public string Message { get; set; }
 
-    GameRoomState room;
+    RoomState room;
 
     protected override async Task OnInitAsync()
     {
-        room = RoomState.Rooms[RoomName];
+        room = AllRoomsState.Rooms[RoomName];
         room.OnMessageReceive += MessageReceived;
-        messages = RoomState.Rooms[RoomName].Messages;
+        messages = AllRoomsState.Rooms[RoomName].Messages;
 
         room.OnPlayerJoin += PlayerJoined;
         players = room.Players;

@@ -1,10 +1,8 @@
 ﻿using Rummy.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace Rummy.Services.RummyEngine
+namespace Rummy.Services
 {
     public class PieceTypeCheckerService
     {

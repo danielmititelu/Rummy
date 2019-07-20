@@ -1,27 +1,42 @@
-﻿using System;
+﻿using Rummy.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Rummy.Services
 {
-    public static class RoomState
+    public class RoomState
     {
-        public static Dictionary<string, GameRoomState> Rooms { get; set; } =
-            new Dictionary<string, GameRoomState>();
+        private readonly RummyEngine _rummyEngine;
 
-        public static event Action OnRoomAdded;
-
-        public static void AddRoom(string roomName, string playerName)
+        public RoomState()
         {
-            Rooms.Add(roomName, new GameRoomState
-            {
-                Players = new List<string> { playerName }
-            });
-            OnRoomAdded.Invoke();
+            _rummyEngine = new RummyEngine();
         }
 
-        public static void JoinRoom(string roomName, string playerName)
+        public List<string> Messages { get; set; } = new List<string>();
+        public List<string> Players { get; set; } = new List<string>();
+        public RummyModel Game { get; set; }
+
+        public event Action OnMessageReceive;
+        public event Action OnPlayerJoin;
+        public event Action OnStartGame;
+
+        public void Message(string message)
         {
-            Rooms[roomName].AddPlayer(playerName);
+            Messages.Add(message);
+            OnMessageReceive.Invoke();
+        }
+
+        public void AddPlayer(string playerName)
+        {
+            Players.Add(playerName);
+            OnPlayerJoin.Invoke();
+        }
+
+        public void StartGame()
+        {
+            var rummyModel = _rummyEngine.InitilizeGame(Players);
+            OnStartGame.Invoke();
         }
     }
 }

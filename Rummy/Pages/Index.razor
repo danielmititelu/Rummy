@@ -40,8 +40,8 @@
 
     protected override async Task OnInitAsync()
     {
-        RoomState.OnRoomAdded += RoomAdded;
-        rooms = RoomState.Rooms.Keys.ToList();
+        AllRoomsState.OnRoomAdded += RoomAdded;
+        rooms = AllRoomsState.Rooms.Keys.ToList();
 
         var authState = await authenticationStateTask;
         var user = authState.User;
@@ -53,13 +53,13 @@
 
     void RoomAdded()
     {
-        rooms = RoomState.Rooms.Keys.ToList();
+        rooms = AllRoomsState.Rooms.Keys.ToList();
         Invoke(() => StateHasChanged());
     }
 
     void CreateRoom()
     {
-        RoomState.AddRoom(RoomName, userName);
+        AllRoomsState.AddRoom(RoomName, userName);
         UriHelper.NavigateTo($"/waitingRoom/{RoomName}");
     }
 
@@ -67,7 +67,7 @@
     {
         if (selectedRoom != null)
         {
-            RoomState.JoinRoom(selectedRoom, userName);
+            AllRoomsState.JoinRoom(selectedRoom, userName);
             UriHelper.NavigateTo($"/waitingRoom/{selectedRoom}");
         }
     }

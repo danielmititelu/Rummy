@@ -15,13 +15,14 @@ namespace Rummy.Services
             {
                 var (pieces, remainingPieces) = Draw14PiecesFromPool(piecesPool);
                 piecesPool = remainingPieces;
-                player.Value.PiecesOnBoard = InitilizePiecesOnBoard(pieces);
+                player.Value.PiecesOnBoard = pieces;
             }
 
             var rummyModel = new RummyModel
             {
                 PiecesPool = piecesPool,
                 Players = players,
+                PlayerOrder = playersNames,
                 CurrentPlayerTurn = RandomlyChoseFirstPlayer(players),
                 PiecesOnTable = new List<PieceModel>() {
                     new PieceModel(PieceModel.Types.Empty,
@@ -29,6 +30,7 @@ namespace Rummy.Services
             };
             return rummyModel;
         }
+
         public PieceModel DrawPieceFromPool(RummyModel model)
         {
             var random = new Random();
@@ -38,21 +40,27 @@ namespace Rummy.Services
             return piece;
         }
 
-        public RummyModel AddPieceOnTable(RummyModel game, PieceModel piece)
+        public RummyModel AddPieceOnTable(RummyModel game, PieceModel piece, string playerName)
         {
+            if (!IsPlayerTurn(game, playerName)) { return game; }
             var tmp = piece.ShallowCopy();
             game.PiecesOnTable.Insert(game.PiecesOnTable.Count - 1, tmp);
+            game.Players[playerName].PiecesOnBoard.Remove(piece);
+            game.CurrentPlayerTurn = PassTurn(game.PlayerOrder, game.CurrentPlayerTurn);
             return game;
         }
 
         public bool IsPlayerTurn(RummyModel model, string playerName)
         {
-            var player = model.Players[playerName];
-            if (model.CurrentPlayerTurn == player)
-            {
-                return true;
-            }
-            return false;
+            return model.CurrentPlayerTurn == playerName;
+        }
+
+        private string PassTurn(List<string> playerOrder, string currentPlayerTurn)
+        {
+            var index = playerOrder.IndexOf(currentPlayerTurn);
+            index++;
+            index %= playerOrder.Count;
+            return playerOrder[index];
         }
 
         private (List<PieceModel>, List<PieceModel>) Draw14PiecesFromPool(List<PieceModel> piecesPool)
@@ -71,24 +79,11 @@ namespace Rummy.Services
             return (pieces, piecesPool);
         }
 
-        private PieceModel[,] InitilizePiecesOnBoard(List<PieceModel> pieces)
-        {
-            var piecesOnBoard = new PieceModel[3, 14];
-            for (int i = 0; i < pieces.Count; i++)
-            {
-                var piece = pieces[i];
-                piecesOnBoard[0, i] = new PieceModel(piece.Number, piece.Color,
-                    PieceModel.Locations.Board, i, 0);
-            }
-
-            return piecesOnBoard;
-        }
-
-        private Player RandomlyChoseFirstPlayer(Dictionary<string, Player> players)
+        private string RandomlyChoseFirstPlayer(Dictionary<string, Player> players)
         {
             var random = new Random();
             var i = random.Next(players.Count);
-            return players.ElementAt(i).Value;
+            return players.ElementAt(i).Key;
         }
 
         private List<PieceModel> GeneratePieces()

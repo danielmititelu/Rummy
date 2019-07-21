@@ -31,7 +31,7 @@
         public Colors Color { get; set; }
         public Types Type { get; set; }
 
-        public PieceModel(int number, Colors color,  Locations location,
+        public PieceModel(int number, Colors color, Locations location,
              int x, int y = 0)
         {
             X = x;
@@ -66,6 +66,30 @@
         public PieceModel ShallowCopy()
         {
             return (PieceModel)this.MemberwiseClone();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is PieceModel item))
+            {
+                return false;
+            }
+
+            return Type.Equals(item.Type) &&
+                Color.Equals(item.Color) &&
+                Number.Equals(item.Color);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 13;
+                hash = (hash * 7) + Type.GetHashCode();
+                hash = (hash * 7) + Color.GetHashCode();
+                hash = (hash * 7) + Number.GetHashCode();
+                return hash;
+            }
         }
     }
 }

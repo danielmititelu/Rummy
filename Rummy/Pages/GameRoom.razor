@@ -5,7 +5,13 @@
 <h3>Players:</h3>
 @foreach (var player in players)
 {
-    <div>@player</div>
+    <div>
+        <span>@player</span>
+        @if (player == currentPlayer)
+        {
+            <span>X</span>
+        }
+    </div>
 }
 
 
@@ -55,11 +61,13 @@
     PieceModel drawPiece = new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.PiecesToDraw, 0);
 
-    PieceModel[,] piecesOnBoard = new PieceModel[2, 14];
+    PieceModel[,] piecesOnBoard = new PieceModel[3, 14];
     List<PieceModel> piecesToDraw = new List<PieceModel>();
     List<PieceModel> piecesOnTable = new List<PieceModel>();
     string errorMessage = "";
-    List<string> players = new List<string>();
+    List<string> players;
+    string currentPlayer;
+
     RoomState room;
     string userName;
 
@@ -67,17 +75,10 @@
     {
         room = AllRoomsState.Rooms[RoomName];
         players = room.Players;
+        currentPlayer = room.GetCurrentPlayer();
 
         room.OnDropPieceOnTable += ReceiveTablePieces;
-
-
-        piecesOnTable = new List<PieceModel>
-{
-            new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.Board, 0)
-        };
-
-        Get14Pieces();
+        piecesOnTable = room.Game.PiecesOnTable;
 
         var authState = await authenticationStateTask;
         var user = authState.User;
@@ -85,12 +86,15 @@
         {
             userName = user.Identity.Name;
         }
+
+        piecesOnBoard = PutPiecesOnBoard(room.GetPlayerBoardPieces(userName));
     }
 
 
     void ReceiveTablePieces()
     {
         piecesOnTable = room.Game.PiecesOnTable;
+        currentPlayer = room.GetCurrentPlayer();
         Invoke(() => StateHasChanged());
     }
 
@@ -153,6 +157,7 @@
         if (source.Location != PieceModel.Locations.Board)
         {
             errorMessage = "You must put a piece from the board to the table";
+            StateHasChanged();
             return;
         }
 
@@ -160,20 +165,26 @@
         {
             return;
         }
-        room.DropPieceOnTable(source, userName);
-        //var tmp = source.ShallowCopy();
-        //piecesOnTable.Insert(piecesOnTable.Count - 1, tmp);
+        var response = room.DropPieceOnTable(source, userName);
+        if (!response.Success)
+        {
+            errorMessage = response.Message;
+            StateHasChanged();
+            return;
+        }
+
         source.Type = PieceModel.Types.Empty;
         source.Number = 0;
         StateHasChanged();
     }
 
-    void Get14Pieces()
+    private PieceModel[,] PutPiecesOnBoard(List<PieceModel> pieces)
     {
-        //get 14 pieces for testing purpose
-        for (int i = 0; i <= 13; i++)
+        var piecesOnBoard = new PieceModel[3, 14];
+        for (int i = 0; i < pieces.Count; i++)
         {
-            piecesOnBoard[0, i] = new PieceModel(i, PieceModel.Colors.Blue,
+            var piece = pieces[i];
+            piecesOnBoard[0, i] = new PieceModel(piece.Number, piece.Color,
                 PieceModel.Locations.Board, i, 0);
         }
 
@@ -182,5 +193,13 @@
             piecesOnBoard[1, i] = new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.Board, i, 1);
         }
+
+        for (int i = 0; i <= 13; i++)
+        {
+            piecesOnBoard[2, i] = new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.Board, i, 1);
+        }
+
+        return piecesOnBoard;
     }
 }

@@ -48,6 +48,9 @@
     [Parameter]
     private string RoomName { get; set; }
 
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
     //to do: remove this:
     PieceModel drawPiece = new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.PiecesToDraw, 0);
@@ -58,11 +61,15 @@
     string errorMessage = "";
     List<string> players = new List<string>();
     RoomState room;
+    string userName;
 
     protected override async Task OnInitAsync()
     {
         room = AllRoomsState.Rooms[RoomName];
         players = room.Players;
+
+        room.OnDropPieceOnTable += ReceiveTablePieces;
+
 
         piecesOnTable = new List<PieceModel>
 {
@@ -71,6 +78,20 @@
         };
 
         Get14Pieces();
+
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            userName = user.Identity.Name;
+        }
+    }
+
+
+    void ReceiveTablePieces()
+    {
+        piecesOnTable = room.Game.PiecesOnTable;
+        Invoke(() => StateHasChanged());
     }
 
     void DropPieceOnBoard(PieceModel source, PieceModel target)
@@ -139,9 +160,9 @@
         {
             return;
         }
-
-        var tmp = source.ShallowCopy();
-        piecesOnTable.Insert(piecesOnTable.Count - 1, tmp);
+        room.DropPieceOnTable(source, userName);
+        //var tmp = source.ShallowCopy();
+        //piecesOnTable.Insert(piecesOnTable.Count - 1, tmp);
         source.Type = PieceModel.Types.Empty;
         source.Number = 0;
         StateHasChanged();

@@ -23,7 +23,9 @@ namespace Rummy.Services
                 PiecesPool = piecesPool,
                 Players = players,
                 CurrentPlayerTurn = RandomlyChoseFirstPlayer(players),
-                PiecesOnTable = new List<PieceModel>()
+                PiecesOnTable = new List<PieceModel>() {
+                    new PieceModel(PieceModel.Types.Empty,
+                    PieceModel.Locations.Board, 0)}
             };
             return rummyModel;
         }
@@ -34,6 +36,13 @@ namespace Rummy.Services
             var piece = model.PiecesPool[i];
             model.PiecesPool.RemoveAt(i); // ??
             return piece;
+        }
+
+        public RummyModel AddPieceOnTable(RummyModel game, PieceModel piece)
+        {
+            var tmp = piece.ShallowCopy();
+            game.PiecesOnTable.Insert(game.PiecesOnTable.Count - 1, tmp);
+            return game;
         }
 
         public bool IsPlayerTurn(RummyModel model, string playerName)

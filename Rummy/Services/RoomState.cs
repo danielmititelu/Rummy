@@ -20,6 +20,7 @@ namespace Rummy.Services
         public event Action OnMessageReceive;
         public event Action OnPlayerJoin;
         public event Action OnStartGame;
+        public event Action OnDropPieceOnTable;
 
         public void Message(string message)
         {
@@ -35,8 +36,15 @@ namespace Rummy.Services
 
         public void StartGame()
         {
-            var rummyModel = _rummyEngine.InitilizeGame(Players);
+            // todo: save this to memory cache/redis
+            Game = _rummyEngine.InitilizeGame(Players);
             OnStartGame.Invoke();
+        }
+
+        public void DropPieceOnTable(PieceModel source, string playerName)
+        {
+            Game = _rummyEngine.AddPieceOnTable(Game, source);
+            OnDropPieceOnTable.Invoke();
         }
     }
 }

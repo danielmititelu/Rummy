@@ -33,7 +33,7 @@ namespace Rummy.Services
                 CurrentPlayerTurn = RandomlyChoseFirstPlayer(players),
                 PiecesOnTable = new List<PieceModel>() {
                     new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.Board, 0)}
+                    PieceModel.Locations.Board)}
             };
             return rummyModel;
         }

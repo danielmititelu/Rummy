@@ -67,18 +67,18 @@
 
     //to do: remove this:
     PieceModel drawPiece = new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.PiecesToDraw, 0);
+                PieceModel.Locations.PiecesToDraw);
 
     PieceModel[,] piecesOnBoard = new PieceModel[3, 14];
     List<PieceModel> piecesToDraw = new List<PieceModel>();
     List<PieceModel> piecesOnTable = new List<PieceModel>();
     List<PieceModel> piecesSetOnTable = new List<PieceModel> {
              new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable, 0),
+                PieceModel.Locations.piecesSetOnTable),
              new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable, 0),
+                PieceModel.Locations.piecesSetOnTable),
              new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable, 0),
+                PieceModel.Locations.piecesSetOnTable),
     };
 
     string errorMessage = "";
@@ -142,36 +142,7 @@
             return;
         }
 
-        var tmpX = source.X;
-        var tmpY = source.Y;
-        var tmpLoc = source.Location;
-        source.X = target.X;
-        source.Y = target.Y;
-        source.Location = target.Location;
-        target.X = tmpX;
-        target.Y = tmpY;
-        target.Location = tmpLoc;
-
-        if (source.Location == PieceModel.Locations.Board)
-        {
-            piecesOnBoard[source.Y, source.X] = source;
-        }
-
-        if (source.Location == PieceModel.Locations.PiecesToDraw)
-        {
-            piecesToDraw[source.X] = source;
-        }
-
-        if (target.Location == PieceModel.Locations.Board)
-        {
-            piecesOnBoard[target.Y, target.X] = target;
-        }
-
-        if (target.Location == PieceModel.Locations.PiecesToDraw)
-        {
-            piecesToDraw[target.X] = target;
-        }
-
+        SwitchPieces(source, target);
         StateHasChanged();
     }
 
@@ -184,15 +155,7 @@
             return;
         }
 
-        var tmpColor = source.Color;
-        var tmpNumber = source.Number;
-        var tmpType = source.Type;
-        source.Color = target.Color;
-        source.Number = target.Number;
-        source.Type = target.Type;
-        target.Color = tmpColor;
-        target.Number = tmpNumber;
-        target.Type = tmpType;
+        SwitchPieces(source, target);
         StateHasChanged();
     }
 
@@ -229,21 +192,34 @@
         {
             var piece = pieces[i];
             piecesOnBoard[0, i] = new PieceModel(piece.Number, piece.Color,
-                PieceModel.Locations.Board, i, 0);
+                PieceModel.Locations.Board);
         }
 
         for (int i = 0; i <= 13; i++)
         {
             piecesOnBoard[1, i] = new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.Board, i, 1);
+                PieceModel.Locations.Board);
         }
 
         for (int i = 0; i <= 13; i++)
         {
             piecesOnBoard[2, i] = new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.Board, i, 1);
+                PieceModel.Locations.Board);
         }
 
         return piecesOnBoard;
+    }
+
+    private void SwitchPieces(PieceModel source, PieceModel target)
+    {
+        var tmpColor = source.Color;
+        var tmpNumber = source.Number;
+        var tmpType = source.Type;
+        source.Color = target.Color;
+        source.Number = target.Number;
+        source.Type = target.Type;
+        target.Color = tmpColor;
+        target.Number = tmpNumber;
+        target.Type = tmpType;
     }
 }

@@ -25,29 +25,23 @@
             piecesSetOnTable
         }
 
-        public int X { get; set; }
-        public int Y { get; set; }
+        //public int X { get; set; }
+        //public int Y { get; set; }
         public Locations Location { get; set; }
         public int Number { get; set; }
         public Colors Color { get; set; }
         public Types Type { get; set; }
 
-        public PieceModel(int number, Colors color, Locations location,
-             int x, int y = 0)
+        public PieceModel(int number, Colors color, Locations location)
         {
-            X = x;
-            Y = y;
             Location = location;
             Number = number;
             Color = color;
             Type = Types.Normal;
         }
 
-        public PieceModel(Types type, Locations location,
-            int x, int y = 0)
+        public PieceModel(Types type, Locations location)
         {
-            X = x;
-            Y = y;
             Location = location;
             Type = type;
         }
@@ -66,7 +60,7 @@
 
         public PieceModel ShallowCopy()
         {
-            return (PieceModel)this.MemberwiseClone();
+            return (PieceModel)MemberwiseClone();
         }
 
         public override bool Equals(object obj)

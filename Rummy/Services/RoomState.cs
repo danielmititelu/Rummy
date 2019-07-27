@@ -43,13 +43,17 @@ namespace Rummy.Services
 
         public Response DropPieceOnTable(PieceModel source, string playerName)
         {
-            if (_rummyEngine.IsPlayerTurn(Game, playerName))
-            {
-                Game = _rummyEngine.AddPieceOnTable(Game, source, playerName);
-                OnDropPieceOnTable.Invoke();
-                return new Response { Success = true, Message = "" };
-            }
-            return new Response { Success = false, Message = "It is not your turn" };
+            var (response, game) = _rummyEngine.AddPieceOnTable(Game, source, playerName);
+            Game = game;
+            OnDropPieceOnTable.Invoke();
+            return response;
+        }
+
+        public ResponseWithPiece DrawPiece(string playerName)
+        {
+            var (response, game) = _rummyEngine.DrawPieceFromPool(Game, playerName);
+            Game = game;
+            return response;
         }
 
         public List<PieceModel> GetPlayerBoardPieces(string playerName)

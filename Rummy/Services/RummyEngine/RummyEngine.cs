@@ -31,23 +31,59 @@ namespace Rummy.Services
             return rummyModel;
         }
 
-        public PieceModel DrawPieceFromPool(RummyModel model)
+        public (ResponseWithPiece, RummyModel) DrawPieceFromPool(RummyModel game, string playerName)
         {
+            if (!IsPlayerTurn(game, playerName))
+            {
+                var errorResponse = new ResponseWithPiece { Success = false, Message = "It is not your turn" };
+                return (errorResponse, game);
+            }
+
+            if (game.HasDrawnPiece)
+            {
+                var errorResponse = new ResponseWithPiece
+                {
+                    Success = false,
+                    Message = "You have already drawn a piece this turn"
+                };
+                return (errorResponse, game);
+            }
+
             var random = new Random();
-            var i = random.Next(model.PiecesPool.Count);
-            var piece = model.PiecesPool[i];
-            model.PiecesPool.RemoveAt(i); // ??
-            return piece;
+            var i = random.Next(game.PiecesPool.Count);
+            var piece = game.PiecesPool[i];
+            game.PiecesPool.RemoveAt(i);
+            game.Players[playerName].PiecesOnBoard.Add(piece);
+            game.HasDrawnPiece = true;
+            var response = new ResponseWithPiece { Success = true, Piece = piece };
+            return (response, game);
         }
 
-        public RummyModel AddPieceOnTable(RummyModel game, PieceModel piece, string playerName)
+        public (Response, RummyModel) AddPieceOnTable(RummyModel game, PieceModel piece, string playerName)
         {
-            if (!IsPlayerTurn(game, playerName)) { return game; }
+            if (!IsPlayerTurn(game, playerName))
+            {
+                var errorResponse = new ResponseWithPiece { Success = false, Message = "It is not your turn" };
+                return (errorResponse, game);
+            }
+
+            if (!game.HasDrawnPiece)
+            {
+                var errorResponse = new ResponseWithPiece
+                {
+                    Success = false,
+                    Message = "You must draw a piece first"
+                };
+                return (errorResponse, game);
+            }
+
             var tmp = piece.ShallowCopy();
             game.PiecesOnTable.Insert(game.PiecesOnTable.Count - 1, tmp);
             game.Players[playerName].PiecesOnBoard.Remove(piece);
             game.CurrentPlayerTurn = PassTurn(game.PlayerOrder, game.CurrentPlayerTurn);
-            return game;
+            game.HasDrawnPiece = false;
+            var response = new Response { Success = true };
+            return (response, game);
         }
 
         public bool IsPlayerTurn(RummyModel model, string playerName)

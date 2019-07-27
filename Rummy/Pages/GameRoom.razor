@@ -110,9 +110,17 @@
 
         if (source.Location == PieceModel.Locations.PiecesToDraw)
         {
-            target.Number = 5;
-            target.Color = PieceModel.Colors.Red;
-            target.Type = PieceModel.Types.Normal;
+            var response = room.DrawPiece(userName);
+            if (!response.Success)
+            {
+                errorMessage = response.Message;
+                StateHasChanged();
+                return;
+            }
+
+            target.Number = response.Piece.Number;
+            target.Color = response.Piece.Color;
+            target.Type = response.Piece.Type;
             StateHasChanged();
             return;
         }

@@ -7,6 +7,13 @@ namespace Rummy.Services
 {
     public class RummyEngine
     {
+        private readonly PieceTypeCheckerService _pieceTypeChecker;
+
+        public RummyEngine()
+        {
+            _pieceTypeChecker = new PieceTypeCheckerService();
+        }
+
         public RummyModel InitilizeGame(List<string> playersNames)
         {
             var piecesPool = GeneratePieces();
@@ -84,6 +91,23 @@ namespace Rummy.Services
             game.HasDrawnPiece = false;
             var response = new Response { Success = true };
             return (response, game);
+        }
+
+        public (Response, RummyModel) AddSet(RummyModel game, List<PieceModel> set, string playerName)
+        {
+            if (_pieceTypeChecker.IsSet(set))
+            {
+                game.Players[playerName].Sets.Add(set);
+                var response = new Response { Success = true };
+                return (response, game);
+            }
+
+            var errorResponse = new Response
+            {
+                Success = false,
+                Message = "Selected pieces do not form a set"
+            };
+            return (errorResponse, game);
         }
 
         public bool IsPlayerTurn(RummyModel model, string playerName)

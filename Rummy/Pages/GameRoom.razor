@@ -32,6 +32,14 @@
 
 <div class="fixed-bottom">
     <div class="board">
+        <div class="row">
+            <div class="ml-auto mr-auto row">
+                @foreach (var piece in piecesSetOnTable)
+                {
+                    <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece"></PieceComponent>
+                }
+            </div>
+        </div>
 
         <div class="row">
             <div style="color:red">@errorMessage</div>
@@ -64,6 +72,15 @@
     PieceModel[,] piecesOnBoard = new PieceModel[3, 14];
     List<PieceModel> piecesToDraw = new List<PieceModel>();
     List<PieceModel> piecesOnTable = new List<PieceModel>();
+    List<PieceModel> piecesSetOnTable = new List<PieceModel> {
+             new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.piecesSetOnTable, 0),
+             new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.piecesSetOnTable, 0),
+             new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.piecesSetOnTable, 0),
+    };
+
     string errorMessage = "";
     List<string> players;
     string currentPlayer;
@@ -159,6 +176,25 @@
     }
 
     void EmptyDropPiece(PieceModel source, PieceModel target) { }
+
+    void DropPieceOnPiecesSetOnTable(PieceModel source, PieceModel target)
+    {
+        if (source.Location != PieceModel.Locations.Board)
+        {
+            return;
+        }
+
+        var tmpColor = source.Color;
+        var tmpNumber = source.Number;
+        var tmpType = source.Type;
+        source.Color = target.Color;
+        source.Number = target.Number;
+        source.Type = target.Type;
+        target.Color = tmpColor;
+        target.Number = tmpNumber;
+        target.Type = tmpType;
+        StateHasChanged();
+    }
 
     void DropPieceOnTable(PieceModel source, PieceModel target)
     {

@@ -21,7 +21,8 @@
         {
             Board,
             PiecesToDraw,
-            Table
+            Table,
+            piecesSetOnTable
         }
 
         public int X { get; set; }

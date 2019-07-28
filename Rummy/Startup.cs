@@ -30,7 +30,6 @@ namespace Rummy
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddScoped<DragAndDropService>();
         }
 

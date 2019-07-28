@@ -18,7 +18,7 @@
     <div class="row">
         @foreach (var piece in room.Game.PiecesOnTable)
         {
-            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece"></PieceComponent>
+            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece"/>
         }
     </div>
 </div>
@@ -26,16 +26,35 @@
 
 <div class="draw-piece">
     <div>Draw here:</div>
-    <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece"></PieceComponent>
+    <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece"/>
 </div>
 
 <div class="fixed-bottom">
     <div class="board">
         <div class="row">
             <div class="ml-auto mr-auto row">
+                @foreach (var player in room.Game.Players)
+                {
+                    <div>
+                        @foreach (var set in player.Value.Sets)
+                        {
+                            <div class="row">
+                                @foreach (var piece in set)
+                                {
+                                    <PieceComponent OnDrop="@EmptyDropPiece" Model="@piece"/>
+                                }
+                            </div>
+                        }
+                        <div>@player.Key</div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="ml-auto mr-auto row">
                 @foreach (var piece in piecesSetOnTable)
                 {
-                    <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece"></PieceComponent>
+                    <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece"/>
                 }
             </div>
         </div>
@@ -49,7 +68,7 @@
             <div class="row">
                 @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
                 {
-                    <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]"></PieceComponent>
+                    <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]"/>
                 }
             </div>
         }
@@ -62,22 +81,28 @@
     private string RoomName { get; set; }
 
     [CascadingParameter]
-    Task<AuthenticationState> authenticationStateTask { get; set; }
+    Task<AuthenticationState>
+    authenticationStateTask
+    { get; set; }
 
     //to do: remove this:
     PieceModel drawPiece = new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.PiecesToDraw);
+    PieceModel.Locations.PiecesToDraw);
 
     PieceModel[,] piecesOnBoard = new PieceModel[3, 14];
-    List<PieceModel> piecesToDraw = new List<PieceModel>();
-    List<PieceModel> piecesSetOnTable = new List<PieceModel> {
-             new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable),
-             new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable),
-             new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable),
-    };
+    List<PieceModel>
+        piecesToDraw = new List<PieceModel>
+            ();
+    List<PieceModel>
+        piecesSetOnTable = new List<PieceModel>
+            {
+                    new PieceModel(PieceModel.Types.Empty,
+                    PieceModel.Locations.piecesSetOnTable),
+                    new PieceModel(PieceModel.Types.Empty,
+                    PieceModel.Locations.piecesSetOnTable),
+                    new PieceModel(PieceModel.Types.Empty,
+                    PieceModel.Locations.piecesSetOnTable),
+                        };
 
     string errorMessage = "";
 
@@ -89,6 +114,7 @@
         room = AllRoomsState.Rooms[RoomName];
 
         room.OnDropPieceOnTable += StateChanged;
+        room.OnDropSetOnTable += StateChanged;
 
         var authState = await authenticationStateTask;
         var user = authState.User;
@@ -109,7 +135,7 @@
     void DropPieceOnBoard(PieceModel source, PieceModel target)
     {
         if (target.Type != PieceModel.Types.Empty &&
-            source.Location == PieceModel.Locations.PiecesToDraw)
+        source.Location == PieceModel.Locations.PiecesToDraw)
         {
             errorMessage = "You cannot put in the same place as another piece";
             StateHasChanged();
@@ -147,6 +173,28 @@
         }
 
         SwitchPieces(source, target);
+
+        if (piecesSetOnTable.All(p => p.Type != PieceModel.Types.Empty))
+        {
+            var response = room.AddSet(piecesSetOnTable, userName);
+            if (!response.Success)
+            {
+                errorMessage = response.Message;
+            }
+            else
+            {
+                piecesSetOnTable = new List<PieceModel>
+        {
+                    new PieceModel(PieceModel.Types.Empty,
+                    PieceModel.Locations.piecesSetOnTable),
+                    new PieceModel(PieceModel.Types.Empty,
+                    PieceModel.Locations.piecesSetOnTable),
+                    new PieceModel(PieceModel.Types.Empty,
+                    PieceModel.Locations.piecesSetOnTable),
+                };
+            }
+        }
+
         StateHasChanged();
     }
 
@@ -177,26 +225,27 @@
         StateHasChanged();
     }
 
-    private PieceModel[,] PutPiecesOnBoard(List<PieceModel> pieces)
+    private PieceModel[,] PutPiecesOnBoard(List<PieceModel>
+        pieces)
     {
         var piecesOnBoard = new PieceModel[3, 14];
         for (int i = 0; i < pieces.Count; i++)
         {
             var piece = pieces[i];
             piecesOnBoard[0, i] = new PieceModel(piece.Number, piece.Color,
-                PieceModel.Locations.Board);
+            PieceModel.Locations.Board);
         }
 
         for (int i = 0; i <= 13; i++)
         {
             piecesOnBoard[1, i] = new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.Board);
+            PieceModel.Locations.Board);
         }
 
         for (int i = 0; i <= 13; i++)
         {
             piecesOnBoard[2, i] = new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.Board);
+            PieceModel.Locations.Board);
         }
 
         return piecesOnBoard;

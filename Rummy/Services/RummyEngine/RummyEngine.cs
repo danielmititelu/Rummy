@@ -23,6 +23,7 @@ namespace Rummy.Services
                 var (pieces, remainingPieces) = Draw14PiecesFromPool(piecesPool);
                 piecesPool = remainingPieces;
                 player.Value.PiecesOnBoard = pieces;
+                player.Value.Sets = new List<List<PieceModel>>();
             }
 
             var rummyModel = new RummyModel

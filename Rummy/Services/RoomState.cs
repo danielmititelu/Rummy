@@ -21,6 +21,7 @@ namespace Rummy.Services
         public event Action OnPlayerJoin;
         public event Action OnStartGame;
         public event Action OnDropPieceOnTable;
+        public event Action OnDropSetOnTable;
 
         public void Message(string message)
         {
@@ -53,6 +54,14 @@ namespace Rummy.Services
         {
             var (response, game) = _rummyEngine.DrawPieceFromPool(Game, playerName);
             Game = game;
+            return response;
+        }
+
+        public Response AddSet(List<PieceModel> set, string playerName)
+        {
+            var (response, game) = _rummyEngine.AddSet(Game, set, playerName);
+            Game = game;
+            OnDropSetOnTable.Invoke();
             return response;
         }
 

@@ -3,21 +3,20 @@
 @using Services
 
 <h3>Players:</h3>
-@foreach (var player in players)
+@foreach (var player in room.Players)
 {
     <div>
         <span>@player</span>
-        @if (player == currentPlayer)
+        @if (player == room.GetCurrentPlayer())
         {
             <span>X</span>
         }
     </div>
 }
 
-
 <div class="main-row">
     <div class="row">
-        @foreach (var piece in piecesOnTable)
+        @foreach (var piece in room.Game.PiecesOnTable)
         {
             <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece"></PieceComponent>
         }
@@ -71,7 +70,6 @@
 
     PieceModel[,] piecesOnBoard = new PieceModel[3, 14];
     List<PieceModel> piecesToDraw = new List<PieceModel>();
-    List<PieceModel> piecesOnTable = new List<PieceModel>();
     List<PieceModel> piecesSetOnTable = new List<PieceModel> {
              new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.piecesSetOnTable),
@@ -82,8 +80,6 @@
     };
 
     string errorMessage = "";
-    List<string> players;
-    string currentPlayer;
 
     RoomState room;
     string userName;
@@ -91,11 +87,8 @@
     protected override async Task OnInitAsync()
     {
         room = AllRoomsState.Rooms[RoomName];
-        players = room.Players;
-        currentPlayer = room.GetCurrentPlayer();
 
-        room.OnDropPieceOnTable += ReceiveTablePieces;
-        piecesOnTable = room.Game.PiecesOnTable;
+        room.OnDropPieceOnTable += StateChanged;
 
         var authState = await authenticationStateTask;
         var user = authState.User;
@@ -108,10 +101,8 @@
     }
 
 
-    void ReceiveTablePieces()
+    void StateChanged()
     {
-        piecesOnTable = room.Game.PiecesOnTable;
-        currentPlayer = room.GetCurrentPlayer();
         Invoke(() => StateHasChanged());
     }
 
@@ -172,6 +163,7 @@
         {
             return;
         }
+
         var response = room.DropPieceOnTable(source, userName);
         if (!response.Success)
         {

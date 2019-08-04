@@ -1,0 +1,15 @@
+{
+  "name": "rummy",
+  "version": "1.0.0",
+  "description": "A game of rummy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass --outputStyle compressed scss/site.scss -o ../wwwroot/css"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-sass": "^4.12.0"
+  }
+}

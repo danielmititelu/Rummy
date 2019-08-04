@@ -1,107 +1,94 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+.red {
+  color: black; }
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
 
 a {
-    color: #0366d6;
-}
+  color: #0366d6; }
 
 app {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
+  position: relative;
+  display: flex;
+  flex-direction: column; }
 
 .top-row {
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-}
+  height: 3.5rem;
+  display: flex;
+  align-items: center; }
 
 .main {
-    flex: 1;
-}
+  flex: 1; }
 
-    .main .top-row {
-        background-color: #e6e6e6;
-        border-bottom: 1px solid #d6d5d5;
-        justify-content: flex-end;
-    }
+.main .top-row {
+  background-color: #e6e6e6;
+  border-bottom: 1px solid #d6d5d5;
+  justify-content: flex-end; }
 
-        .main .top-row > a {
-            margin-left: 1.5rem;
-        }
+.main .top-row > a {
+  margin-left: 1.5rem; }
 
 .content {
-    padding-top: 1.1rem;
-}
-
+  padding-top: 1.1rem; }
 
 .Block--isDraggable:hover .BlockContent {
-    color: #0042ff;
-}
+  color: #0042ff; }
 
 .BlockWrapper {
-    background-color: aqua;
-    width: 100px;
-    height: 100px;
-    border: 1px solid black;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-}
+  background-color: aqua;
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */ }
 
 .draggable-dropzone--occupied {
-    background: lightgreen;
-}
+  background: lightgreen; }
 
 canvas {
-    position: absolute;
-}
+  position: absolute; }
 
 .cell {
-    width: 33px;
-    height: 49px;
-    border: 1px solid black;
-}
+  width: 33px;
+  height: 49px;
+  border: 1px solid black; }
 
 .main-row {
-    margin: auto;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+  margin: auto;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
 
 .piece {
-    width: 33px;
-    height: 49px;
-    height: 100%;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 47px;
-    font-size: 26px;
-    cursor: pointer;
-    border: 1px solid black;
-}
+  width: 33px;
+  height: 49px;
+  height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 47px;
+  font-size: 26px;
+  cursor: pointer;
+  border: 1px solid black; }
 
 .fixed-bottom {
-    display: flex;
-}
+  display: flex; }
 
 .board {
-    margin-left: auto;
-    margin-right: auto;
-}
+  margin-left: auto;
+  margin-right: auto; }
 
 .draw-piece {
-    margin: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center; }

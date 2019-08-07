@@ -4,22 +4,24 @@
 
 <AuthorizeView>
     <Authorized>
-        <div class="row">
-            <select @bind="@selectedRoom" class="form-control" multiple>
-                @foreach (var room in rooms)
-                {
-                    <option value="@room">@room</option>
-                }
-            </select>
-        </div>
-        <div class="row">
-            <button class="btn btn-primary" @onclick="@JoinRoom">Join Room</button>
-        </div>
-        <div class="row">
-            <input class="form-control" @bind="@RoomName" />
-        </div>
-        <div class="row">
-            <button class="btn btn-primary" @onclick="@CreateRoom">Create Room</button>
+        <div class="index-page">
+            <div class="row">
+                <select @bind="@selectedRoom" class="form-control" multiple>
+                    @foreach (var room in rooms)
+                    {
+                        <option value="@room">@room</option>
+                    }
+                </select>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary" @onclick="@JoinRoom">Join Room</button>
+            </div>
+            <div class="row create-room">
+                <input class="form-control" @bind="@RoomName" />
+            </div>
+            <div class="row">
+                <button class="btn btn-primary" @onclick="@CreateRoom">Create Room</button>
+            </div>
         </div>
     </Authorized>
     <NotAuthorized>

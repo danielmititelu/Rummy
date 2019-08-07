@@ -1,5 +1,11 @@
-.red {
-  color: black; }
+.index-page {
+  width: 50%;
+  margin-right: auto;
+  margin-left: auto; }
+  .index-page .btn {
+    margin-top: 5px; }
+  .index-page .create-room {
+    margin-top: 10px; }
 
 html, body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }

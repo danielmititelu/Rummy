@@ -15,6 +15,8 @@ namespace Rummy
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseIIS();
+                    webBuilder.UseIISIntegration();
                 });
     }
 }

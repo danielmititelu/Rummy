@@ -2,23 +2,11 @@
 @using Models
 @using Services
 
-<h3>Players:</h3>
-@foreach (var player in room.Players)
-{
-    <div>
-        <span>@player</span>
-        @if (player == room.GetCurrentPlayer())
-        {
-            <span>X</span>
-        }
-    </div>
-}
-
 <div class="main-row">
     <div class="row">
         @foreach (var piece in room.Game.PiecesOnTable)
         {
-            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece"/>
+            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece" />
         }
     </div>
 </div>
@@ -26,39 +14,47 @@
 
 <div class="draw-piece">
     <div>Draw here:</div>
-    <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece"/>
+    <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece" />
+</div>
+
+<div class="ml-auto mr-auto row">
+    @foreach (var playerName in room.Players)
+    {
+        var player = room.Game.Players[playerName];
+        var index = room.Players.IndexOf(playerName);
+        <div class="player-@index-sets">
+            <div class="sets">
+                @foreach (var set in player.Sets)
+                {
+                    <div class="row">
+                        @foreach (var piece in set)
+                        {
+                            <PieceComponent OnDrop="@EmptyDropPiece" Model="@piece" />
+                        }
+                    </div>
+                }
+
+                @if (userName == playerName)
+                {
+                    <div class="ml-auto mr-auto row">
+                        @foreach (var piece in piecesSetOnTable)
+                        {
+                            <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece" />
+                        }
+                    </div>
+                }
+            </div>
+            <span>@playerName</span>
+            @if (playerName == room.GetCurrentPlayer())
+            {
+                <span>X</span>
+            }
+        </div>
+    }
 </div>
 
 <div class="fixed-bottom">
     <div class="board">
-        <div class="row">
-            <div class="ml-auto mr-auto row">
-                @foreach (var player in room.Game.Players)
-                {
-                    <div>
-                        @foreach (var set in player.Value.Sets)
-                        {
-                            <div class="row">
-                                @foreach (var piece in set)
-                                {
-                                    <PieceComponent OnDrop="@EmptyDropPiece" Model="@piece"/>
-                                }
-                            </div>
-                        }
-                        <div>@player.Key</div>
-                    </div>
-                }
-            </div>
-        </div>
-        <div class="row">
-            <div class="ml-auto mr-auto row">
-                @foreach (var piece in piecesSetOnTable)
-                {
-                    <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece"/>
-                }
-            </div>
-        </div>
-
         <div class="row">
             <div style="color:red">@errorMessage</div>
         </div>
@@ -68,7 +64,7 @@
             <div class="row">
                 @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
                 {
-                    <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]"/>
+                    <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]" />
                 }
             </div>
         }
@@ -85,24 +81,25 @@
     authenticationStateTask
     { get; set; }
 
-    //to do: remove this:
     PieceModel drawPiece = new PieceModel(PieceModel.Types.Empty,
     PieceModel.Locations.PiecesToDraw);
 
     PieceModel[,] piecesOnBoard = new PieceModel[3, 14];
+
     List<PieceModel>
         piecesToDraw = new List<PieceModel>
             ();
+
     List<PieceModel>
         piecesSetOnTable = new List<PieceModel>
             {
-                    new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.piecesSetOnTable),
-                    new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.piecesSetOnTable),
-                    new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.piecesSetOnTable),
-                        };
+                new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.piecesSetOnTable),
+                new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.piecesSetOnTable),
+                new PieceModel(PieceModel.Types.Empty,
+                PieceModel.Locations.piecesSetOnTable),
+                                             };
 
     string errorMessage = "";
 
@@ -184,7 +181,7 @@
             else
             {
                 piecesSetOnTable = new List<PieceModel>
-        {
+{
                     new PieceModel(PieceModel.Types.Empty,
                     PieceModel.Locations.piecesSetOnTable),
                     new PieceModel(PieceModel.Types.Empty,

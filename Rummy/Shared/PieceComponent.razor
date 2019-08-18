@@ -6,7 +6,7 @@
     <div draggable="true" @ondragstart="@DragStart">
         @if (Model.Type == PieceModel.Types.Normal)
         {
-            <div style="color:@Model.Color" class="piece">@Model.Number</div>
+            <div class="@Model.Color.ToString().ToLower() piece">@Model.Number</div>
         }
 
         @if (Model.Type == PieceModel.Types.Joker)
@@ -16,7 +16,7 @@
 
         @if (Model.Type == PieceModel.Types.Empty)
         {
-            <div class="piece">R</div>
+            <div class="piece"></div>
         }
     </div>
 </div>

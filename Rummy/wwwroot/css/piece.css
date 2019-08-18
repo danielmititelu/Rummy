@@ -1,0 +1,22 @@
+.piece {
+  margin: 1px;
+  width: 33px;
+  height: 49px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 47px;
+  font-size: 26px;
+  cursor: pointer;
+  border: 1px solid black; }
+
+.yellow {
+  color: #f5dd23; }
+
+.black {
+  color: black; }
+
+.blue {
+  color: blue; }
+
+.red {
+  color: red; }

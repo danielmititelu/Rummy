@@ -1,0 +1,28 @@
+.sets {
+  min-height: 100px;
+  min-width: 100px;
+  border: 1px solid black; }
+
+.player-0-sets {
+  bottom: 165px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0); }
+
+.player-1-sets {
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  transform: translate(0%, -50%); }
+
+.player-2-sets {
+  position: absolute;
+  top: 65px;
+  left: 50%;
+  transform: translate(-50%, 0); }
+
+.player-3-sets {
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  transform: translate(0%, -50%); }

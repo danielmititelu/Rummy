@@ -8,10 +8,12 @@
     font-size: 26px;
     cursor: pointer;
     border: 1px solid black;
+    background-color: white;
+    background-image: url(/background.png);
 }
 
 .yellow {
-    color: #f5dd23;
+    color: rgb(247,159,33);
 }
 
 .black {
@@ -24,4 +26,8 @@
 
 .red {
     color: red;
+}
+
+.empty-piece {
+    background: rgba(255,255,255,0.7);
 }

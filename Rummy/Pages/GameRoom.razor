@@ -2,75 +2,76 @@
 @using Models
 @using Services
 
-<div class="main-row">
-    <div class="row">
-        @foreach (var piece in room.Game.PiecesOnTable)
-        {
-            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece" />
-        }
-    </div>
-</div>
-<br />
-
-<div class="draw-piece">
-    <div>Draw here:</div>
-    <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece" />
-</div>
-
-<div class="ml-auto mr-auto row">
-    @foreach (var playerName in room.Players)
-    {
-        var player = room.Game.Players[playerName];
-        var index = room.Players.IndexOf(playerName);
-        <div class="player-@index-sets">
-            <div class="sets">
-                @foreach (var set in player.Sets)
-                {
-                    <div class="row">
-                        @foreach (var piece in set)
-                        {
-                            <PieceComponent OnDrop="@EmptyDropPiece" Model="@piece" />
-                        }
-                    </div>
-                }
-
-                @if (userName == playerName)
-                {
-                    <div class="ml-auto mr-auto row">
-                        @foreach (var piece in piecesSetOnTable)
-                        {
-                            <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece" />
-                        }
-                    </div>
-                }
-            </div>
-            <span>@playerName</span>
-            @if (playerName == room.GetCurrentPlayer())
+<div class="game-room">
+    <div class="main-row">
+        <div class="row">
+            @foreach (var piece in room.Game.PiecesOnTable)
             {
-                <span>X</span>
+                <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece" />
             }
         </div>
-    }
-</div>
+    </div>
+    <br />
 
-<div class="fixed-bottom">
-    <div class="board">
-        <div class="row">
-            <div style="color:red">@errorMessage</div>
-        </div>
+    <div class="draw-piece">
+        <div class="medium-font">Draw here:</div>
+        <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece" />
+    </div>
 
-        @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
+    <div class="ml-auto mr-auto row">
+        @foreach (var playerName in room.Players)
         {
-            <div class="row">
-                @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
+            var player = room.Game.Players[playerName];
+            var index = room.Players.IndexOf(playerName);
+            <div class="player-@index-sets">
+                <div class="sets">
+                    @foreach (var set in player.Sets)
+                    {
+                        <div class="row">
+                            @foreach (var piece in set)
+                            {
+                                <PieceComponent OnDrop="@EmptyDropPiece" Model="@piece" />
+                            }
+                        </div>
+                    }
+
+                    @if (userName == playerName)
+                    {
+                        <div class="ml-auto mr-auto row">
+                            @foreach (var piece in piecesSetOnTable)
+                            {
+                                <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece" />
+                            }
+                        </div>
+                    }
+                </div>
+                <span class="medium-font">@playerName</span>
+                @if (playerName == room.GetCurrentPlayer())
                 {
-                    <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]" />
+                    <span class="medium-font">X</span>
                 }
             </div>
         }
     </div>
-</div>
 
+    <div class="fixed-bottom">
+        <div class="board">
+            <div class="row">
+                <div style="color:red">@errorMessage</div>
+            </div>
+
+            @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
+            {
+                <div class="row">
+                    @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
+                    {
+                        <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]" />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -99,7 +100,7 @@
                 PieceModel.Locations.piecesSetOnTable),
                 new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.piecesSetOnTable),
-                                             };
+                                                 };
 
     string errorMessage = "";
 

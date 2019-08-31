@@ -2,8 +2,12 @@
 @using Models
 @inject DragAndDropService DragAndDropService
 
+@{ 
+    var draggable = Model.Type != PieceModel.Types.Empty;
+}
+
 <div ondragover="event.preventDefault()" @ondrop="@Drop">
-    <div draggable="true" @ondragstart="@DragStart">
+    <div draggable=@draggable.ToString() @ondragstart="@DragStart">
         @if (Model.Type == PieceModel.Types.Normal)
         {
             <div class="@Model.Color.ToString().ToLower() piece">@Model.Number</div>
@@ -17,6 +21,11 @@
         @if (Model.Type == PieceModel.Types.Empty)
         {
             <div class="piece empty-piece"></div>
+        }
+
+        @if (Model.Type == PieceModel.Types.FaceDown)
+        {
+            <div class="piece face-down-piece"></div>
         }
     </div>
 </div>

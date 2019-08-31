@@ -2,76 +2,86 @@
 @using Models
 @using Services
 
-<div class="game-room">
-    <div class="main-row">
-        <div class="row">
-            @foreach (var piece in room.Game.PiecesOnTable)
-            {
-                <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece" />
-            }
-        </div>
-    </div>
-    <br />
-
-    <div class="draw-piece">
-        <div class="medium-font">Draw here:</div>
-        <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece" />
-    </div>
-
-    <div class="ml-auto mr-auto row">
-        @foreach (var playerName in room.Players)
+<div class="main-row">
+    <div class="row">
+        @foreach (var piece in room.Game.PiecesOnTable)
         {
-            var player = room.Game.Players[playerName];
-            var index = room.Players.IndexOf(playerName);
-            <div class="player-@index-sets">
-                <div class="sets">
-                    @foreach (var set in player.Sets)
-                    {
-                        <div class="row">
+            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece" />
+        }
+    </div>
+</div>
+<br />
+
+<div class="draw-piece">
+    <div class="medium-font">Draw here:</div>
+    <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece" />
+</div>
+
+<div class="ml-auto mr-auto row">
+    @{
+        var playerOrder = room.GetPlayersInOrder(userName);
+    }
+    @foreach (var playerName in playerOrder)
+    {
+        var player = room.Game.Players[playerName];
+        var index = playerOrder.IndexOf(playerName);
+        <div class="player-@index-sets">
+            <div class="sets">
+                @foreach (var set in player.Sets)
+                {
+                    var setPiece = new PieceModel(PieceModel.Types.Empty,
+                    PieceModel.Locations.piecesSetOnTable);
+                    <div>
+                        <div class="ml-auto mr-auto row">
+                            <PieceComponent OnDrop="@EmptyDropPiece" Model="@setPiece" />
                             @foreach (var piece in set)
                             {
                                 <PieceComponent OnDrop="@EmptyDropPiece" Model="@piece" />
                             }
+                            <PieceComponent OnDrop="@EmptyDropPiece" Model="@setPiece" />
                         </div>
-                    }
+                    </div>
+                }
 
-                    @if (userName == playerName)
-                    {
-                        <div class="ml-auto mr-auto row">
-                            @foreach (var piece in piecesSetOnTable)
-                            {
-                                <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece" />
-                            }
-                        </div>
-                    }
-                </div>
-                <span class="medium-font">@playerName</span>
-                @if (playerName == room.GetCurrentPlayer())
+                @if (userName == playerName)
                 {
-                    <span class="medium-font">X</span>
+                    <div class="set">
+                        @foreach (var piece in piecesSetOnTable)
+                        {
+                            <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece" />
+                        }
+                    </div>
+                }
+            </div>
+            <span class="medium-font">@playerName</span>
+            @if (playerName == room.GetCurrentPlayer())
+            {
+                <span class="medium-font">X</span>
+            }
+        </div>
+    }
+</div>
+
+<div class="fixed-bottom">
+    <div class="board">
+        @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
+        {
+            <div class="row">
+                @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
+                {
+                    <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]" />
                 }
             </div>
         }
     </div>
-
-    <div class="fixed-bottom">
-        <div class="board">
-            <div class="row">
-                <div style="color:red">@errorMessage</div>
-            </div>
-
-            @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
-            {
-                <div class="row">
-                    @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
-                    {
-                        <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]" />
-                    }
-                </div>
-            }
-        </div>
-    </div>
 </div>
+
+@if (errorMessage != "")
+{
+    <div class="error-message row">
+        <span class="error-text ml-auto mr-auto row">@errorMessage</span>
+    </div>
+}
 
 @code {
     [Parameter]
@@ -82,7 +92,7 @@
     authenticationStateTask
     { get; set; }
 
-    PieceModel drawPiece = new PieceModel(PieceModel.Types.Empty,
+    PieceModel drawPiece = new PieceModel(PieceModel.Types.FaceDown,
     PieceModel.Locations.PiecesToDraw);
 
     PieceModel[,] piecesOnBoard = new PieceModel[3, 14];
@@ -100,7 +110,7 @@
                 PieceModel.Locations.piecesSetOnTable),
                 new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.piecesSetOnTable),
-                                                 };
+                            };
 
     string errorMessage = "";
 
@@ -135,8 +145,7 @@
         if (target.Type != PieceModel.Types.Empty &&
         source.Location == PieceModel.Locations.PiecesToDraw)
         {
-            errorMessage = "You cannot put in the same place as another piece";
-            StateHasChanged();
+            ShowError("You cannot put in the same place as another piece");
             return;
         }
 
@@ -145,8 +154,7 @@
             var response = room.DrawPiece(userName);
             if (!response.Success)
             {
-                errorMessage = response.Message;
-                StateHasChanged();
+                ShowError(response.Message);
                 return;
             }
 
@@ -177,7 +185,7 @@
             var response = room.AddSet(piecesSetOnTable, userName);
             if (!response.Success)
             {
-                errorMessage = response.Message;
+                ShowError(response.Message);
             }
             else
             {
@@ -200,8 +208,8 @@
     {
         if (source.Location != PieceModel.Locations.Board)
         {
-            errorMessage = "You must put a piece from the board to the table";
-            StateHasChanged();
+            ShowError("You must put a piece from the board to the table");
+
             return;
         }
 
@@ -213,8 +221,7 @@
         var response = room.DropPieceOnTable(source, userName);
         if (!response.Success)
         {
-            errorMessage = response.Message;
-            StateHasChanged();
+            ShowError(response.Message);
             return;
         }
 
@@ -230,8 +237,7 @@
         for (int i = 0; i < pieces.Count; i++)
         {
             var piece = pieces[i];
-            piecesOnBoard[0, i] = new PieceModel(piece.Number, piece.Color,
-            PieceModel.Locations.Board);
+            piecesOnBoard[0, i] = piece.ShallowCopy();
         }
 
         for (int i = 0; i <= 13; i++)
@@ -247,6 +253,19 @@
         }
 
         return piecesOnBoard;
+    }
+
+    private void ShowError(string message)
+    {
+        errorMessage = message;
+        StateHasChanged();
+
+        Task.Run(async delegate
+        {
+            await Task.Delay(5000);
+            errorMessage = "";
+            await Invoke(() => StateHasChanged());
+        });
     }
 
     private void SwitchPieces(PieceModel source, PieceModel target)

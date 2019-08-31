@@ -42,6 +42,19 @@ namespace Rummy.Services
             OnStartGame.Invoke();
         }
 
+        public List<string> GetPlayersInOrder(string playerName)
+        {
+            var playerIndex = Players.IndexOf(playerName);
+            var playersOrder = new List<string>();
+            for (int i = playerIndex; i < Players.Count + playerIndex; i++)
+            {
+                var index = i;
+                index %= Players.Count;
+                playersOrder.Add(Players[index]);
+            }
+            return playersOrder;
+        }
+
         public Response DropPieceOnTable(PieceModel source, string playerName)
         {
             var (response, game) = _rummyEngine.AddPieceOnTable(Game, source, playerName);

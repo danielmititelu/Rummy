@@ -7,14 +7,15 @@
             Black,
             Red,
             Blue,
-            Yellow
+            Yellow,
         }
 
         public enum Types
         {
             Empty,
             Normal,
-            Joker
+            Joker,
+            FaceDown
         }
 
         public enum Locations
@@ -25,12 +26,11 @@
             piecesSetOnTable
         }
 
-        //public int X { get; set; }
-        //public int Y { get; set; }
         public Locations Location { get; set; }
         public int Number { get; set; }
         public Colors Color { get; set; }
         public Types Type { get; set; }
+        public int Id { get; set; }
 
         public PieceModel(int number, Colors color, Locations location)
         {
@@ -38,6 +38,7 @@
             Number = number;
             Color = color;
             Type = Types.Normal;
+         
         }
 
         public PieceModel(Types type, Locations location)
@@ -46,11 +47,12 @@
             Type = type;
         }
 
-        public PieceModel(int number, Colors color)
+        public PieceModel(int number, Colors color, int id)
         {
             Number = number;
             Color = color;
             Type = Types.Normal;
+            Id = id;
         }
 
         public PieceModel(Types type)
@@ -72,7 +74,8 @@
 
             return Type.Equals(item.Type) &&
                 Color.Equals(item.Color) &&
-                Number.Equals(item.Color);
+                Number.Equals(item.Number) &&
+                Id.Equals(item.Id);
         }
 
         public override int GetHashCode()
@@ -83,6 +86,7 @@
                 hash = (hash * 7) + Type.GetHashCode();
                 hash = (hash * 7) + Color.GetHashCode();
                 hash = (hash * 7) + Number.GetHashCode();
+                hash = (hash * 7) + Id.GetHashCode();
                 return hash;
             }
         }

@@ -37,38 +37,52 @@
   color: red; }
 
 .empty-piece {
-  background: rgba(255, 255, 255, 0.7); }
+  background: rgba(255, 255, 255, 0.5);
+  cursor: default; }
+
+.face-down-piece {
+  background: white; }
 
 .sets {
-  min-height: 100px;
-  min-width: 100px;
-  border: 3px solid black;
+  min-height: 200px;
+  min-width: 200px;
+  border: 3px solid #b3a377;
   padding: 7px;
   background-image: url(/wood.png); }
 
+.set {
+  display: flex;
+  margin: auto 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content; }
+
 .player-0-sets {
-  bottom: 165px;
+  bottom: 0px;
   position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0); }
+  left: 24%;
+  z-index: 9999; }
 
 .player-1-sets {
   position: absolute;
   right: 3px;
   top: 50%;
-  transform: translate(0%, -50%); }
+  transform: translate(0%, -50%);
+  z-index: 9999; }
 
 .player-2-sets {
   position: absolute;
   top: 65px;
   left: 50%;
-  transform: translate(-50%, 0); }
+  transform: translate(-50%, 0);
+  z-index: 9999; }
 
 .player-3-sets {
   position: absolute;
   left: 3px;
   top: 50%;
-  transform: translate(0%, -50%); }
+  transform: translate(0%, -50%);
+  z-index: 9999; }
 
 body {
   background-color: #004a0b;
@@ -77,6 +91,27 @@ body {
 .medium-font {
   font-size: 20px;
   color: blanchedalmond; }
+
+.error-message {
+  background: indianred;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 80px;
+  width: 100%;
+  margin-left: 0px;
+  margin-right: 0px;
+  border-bottom: 2px solid black; }
+
+.error-text {
+  color: white;
+  font-size: 30px;
+  margin: auto; }
+
+.board {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px; }
 
 .top-row {
   height: 3.5rem;
@@ -87,8 +122,8 @@ body {
   flex: 1; }
 
 .main .top-row {
-  background-color: midnightblue;
-  border-bottom: 1px solid #d6d5d5;
+  /*background-color: midnightblue;
+    border-bottom: 1px solid #d6d5d5;*/
   justify-content: flex-end; }
 
 a {
@@ -113,10 +148,6 @@ canvas {
 
 .fixed-bottom {
   display: flex; }
-
-.board {
-  margin-left: auto;
-  margin-right: auto; }
 
 .draw-piece {
   display: flex;

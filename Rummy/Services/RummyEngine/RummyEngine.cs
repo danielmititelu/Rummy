@@ -133,7 +133,7 @@ namespace Rummy.Services
                 var random = new Random();
                 var index = random.Next(remainingPieces.Count);
                 var piece = remainingPieces[index];
-                remainingPieces.RemoveAt(i);
+                remainingPieces.Remove(piece);
                 pieces.Add(piece);
             }
 
@@ -155,16 +155,18 @@ namespace Rummy.Services
                 PieceModel.Colors.Black,
                 PieceModel.Colors.Blue,
                 PieceModel.Colors.Red,
-                PieceModel.Colors.Yellow
+                PieceModel.Colors.Yellow,
             };
 
+            var id = 0;
             for (int y = 0; y < 2; y++)
             {
                 foreach (var color in colors)
                 {
                     for (int i = 1; i <= 13; i++)
                     {
-                        piecesPool.Add(new PieceModel(i, color));
+                        id++;
+                        piecesPool.Add(new PieceModel(i, color, id));
                     }
                 }
             }

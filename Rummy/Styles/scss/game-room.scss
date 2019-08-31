@@ -7,3 +7,27 @@
     font-size: 20px;
     color: blanchedalmond;
 }
+
+.error-message {
+    background: indianred;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 80px;
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-bottom: 2px solid black;
+}
+
+.error-text {
+    color: white;
+    font-size: 30px;
+    margin: auto;
+}
+
+.board {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30px;
+}

@@ -15,8 +15,8 @@
 }
 
 .main .top-row {
-    background-color: midnightblue;
-    border-bottom: 1px solid #d6d5d5;
+    /*background-color: midnightblue;
+    border-bottom: 1px solid #d6d5d5;*/
     justify-content: flex-end;
 }
 
@@ -47,11 +47,6 @@ canvas {
 
 .fixed-bottom {
     display: flex;
-}
-
-.board {
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .draw-piece {

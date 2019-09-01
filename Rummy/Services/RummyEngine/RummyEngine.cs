@@ -96,6 +96,13 @@ namespace Rummy.Services
 
         public (Response, RummyModel) AddSet(RummyModel game, List<PieceModel> set, string playerName)
         {
+
+            if (!IsPlayerTurn(game, playerName))
+            {
+                var errorTurnResponse = new ResponseWithPiece { Success = false, Message = "It is not your turn" };
+                return (errorTurnResponse, game);
+            }
+
             if (_pieceTypeChecker.IsSet(set))
             {
                 game.Players[playerName].Sets.Add(set);
@@ -107,6 +114,35 @@ namespace Rummy.Services
             {
                 Success = false,
                 Message = "Selected pieces do not form a set"
+            };
+            return (errorResponse, game);
+        }
+
+        internal (Response, RummyModel) AddPieceToSet(RummyModel game, int setIndex,
+            string setPlayerName, PieceModel piece, string playerName)
+        {
+            if (!IsPlayerTurn(game, playerName))
+            {
+                var errorTurnResponse = new ResponseWithPiece { Success = false, Message = "It is not your turn" };
+                return (errorTurnResponse, game);
+            }
+
+            var set = new List<PieceModel>(game.Players[setPlayerName].Sets[setIndex])
+            {
+                piece
+            };
+
+            if (_pieceTypeChecker.IsSet(set))
+            {
+                game.Players[playerName].Sets[setIndex].Add(piece);
+                var response = new Response { Success = true };
+                return (response, game);
+            }
+
+            var errorResponse = new Response
+            {
+                Success = false,
+                Message = "Piece does add to set"
             };
             return (errorResponse, game);
         }

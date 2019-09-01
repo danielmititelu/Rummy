@@ -27,18 +27,24 @@
         var index = playerOrder.IndexOf(playerName);
         <div class="player-@index-sets">
             <div class="sets">
-                @foreach (var set in player.Sets)
+
+                @for (int i = 0; i < player.Sets.Count; i++)
                 {
+                    var set = player.Sets[i];
                     var setPiece = new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.piecesSetOnTable);
+                    PieceModel.Locations.piecesSetOnTable)
+                    {
+                        SetPlayerName = playerName,
+                        SetIndex = i
+                    };
                     <div>
                         <div class="ml-auto mr-auto row">
-                            <PieceComponent OnDrop="@EmptyDropPiece" Model="@setPiece" />
+                            <PieceComponent OnDrop="@DropPieceOnSet" Model="@setPiece" />
                             @foreach (var piece in set)
                             {
                                 <PieceComponent OnDrop="@EmptyDropPiece" Model="@piece" />
                             }
-                            <PieceComponent OnDrop="@EmptyDropPiece" Model="@setPiece" />
+                            <PieceComponent OnDrop="@DropPieceOnSet" Model="@setPiece" />
                         </div>
                     </div>
                 }
@@ -110,7 +116,7 @@
                 PieceModel.Locations.piecesSetOnTable),
                 new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.piecesSetOnTable),
-                            };
+                                            };
 
     string errorMessage = "";
 
@@ -170,6 +176,23 @@
     }
 
     void EmptyDropPiece(PieceModel source, PieceModel target) { }
+
+    void DropPieceOnSet(PieceModel source, PieceModel target)
+    {
+        if (source.Location != PieceModel.Locations.Board)
+        {
+            return;
+        }
+
+        var response = room.AddPieceToSet(target.SetIndex, target.SetPlayerName, source, userName);
+        if (!response.Success)
+        {
+            ShowError(response.Message);
+            return;
+        }
+
+        StateHasChanged();
+    }
 
     void DropPieceOnPiecesSetOnTable(PieceModel source, PieceModel target)
     {

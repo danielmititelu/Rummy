@@ -8,11 +8,6 @@ namespace Rummy.Services
     {
         public bool IsSet(IList<PieceModel> pieces)
         {
-            if (pieces.Count < 3)
-            {
-                return false;
-            }
-
             if (IsRun(pieces))
             {
                 return true;

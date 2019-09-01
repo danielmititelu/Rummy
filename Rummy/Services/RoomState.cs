@@ -78,6 +78,15 @@ namespace Rummy.Services
             return response;
         }
 
+        public Response AddPieceToSet(int setIndex, string setPlayerName, PieceModel piece, string playerName)
+        {
+            var (response, game) = _rummyEngine.AddPieceToSet(Game, setIndex, setPlayerName, piece, playerName);
+            Game = game;
+            OnDropSetOnTable.Invoke();
+            return response;
+        }
+        
+
         public List<PieceModel> GetPlayerBoardPieces(string playerName)
         {
             return Game.Players[playerName].PiecesOnBoard;

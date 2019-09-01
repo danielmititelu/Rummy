@@ -16,9 +16,9 @@ namespace Tests
         {
             var pieces = new List<PieceModel>
             {
-                new PieceModel(p1, color),
-                new PieceModel(p2, color),
-                new PieceModel(p3, color)
+                new PieceModel(p1, color, 1),
+                new PieceModel(p2, color, 2),
+                new PieceModel(p3, color, 3)
             };
 
             var piecesService = new PieceTypeCheckerService();
@@ -34,9 +34,9 @@ namespace Tests
         {
             var pieces = new List<PieceModel>
             {
-                new PieceModel(p1, color),
-                new PieceModel(p2, color),
-                new PieceModel(p3, color)
+                new PieceModel(p1, color, 1),
+                new PieceModel(p2, color, 2),
+                new PieceModel(p3, color, 3)
             };
 
             var piecesService = new PieceTypeCheckerService();
@@ -51,9 +51,28 @@ namespace Tests
         {
             var pieces = new List<PieceModel>
             {
-                new PieceModel(n, c1),
-                new PieceModel(n, c2),
-                new PieceModel(n, c3)
+                new PieceModel(n, c1, 1),
+                new PieceModel(n, c2, 2),
+                new PieceModel(n, c3, 3)
+            };
+
+            var piecesService = new PieceTypeCheckerService();
+            Assert.IsTrue(piecesService.IsSet(pieces));
+        }
+
+        [TestCase(PieceModel.Colors.Blue, PieceModel.Colors.Yellow, PieceModel.Colors.Red, PieceModel.Colors.Black, 7)]
+        [TestCase(PieceModel.Colors.Yellow, PieceModel.Colors.Red, PieceModel.Colors.Black, PieceModel.Colors.Blue, 8)]
+        [TestCase(PieceModel.Colors.Red, PieceModel.Colors.Black, PieceModel.Colors.Blue, PieceModel.Colors.Yellow, 13)]
+        [TestCase(PieceModel.Colors.Black, PieceModel.Colors.Blue, PieceModel.Colors.Yellow, PieceModel.Colors.Red, 1)]
+        public void ReturnTrueGivenCorrectGroupOfFour(PieceModel.Colors c1, PieceModel.Colors c2,
+            PieceModel.Colors c3, PieceModel.Colors c4, int n)
+        {
+            var pieces = new List<PieceModel>
+            {
+                new PieceModel(n, c1, 1),
+                new PieceModel(n, c2, 2),
+                new PieceModel(n, c3, 3),
+                new PieceModel(n, c4, 3),
             };
 
             var piecesService = new PieceTypeCheckerService();
@@ -62,13 +81,13 @@ namespace Tests
 
         [TestCase(PieceModel.Colors.Blue, PieceModel.Colors.Blue, PieceModel.Colors.Red, 7)]
         [TestCase(PieceModel.Colors.Black, PieceModel.Colors.Black, PieceModel.Colors.Black, 1)]
-        public void ReturnTrueGivenIncorrectGroupOfThree(PieceModel.Colors c1, PieceModel.Colors c2, PieceModel.Colors c3, int n)
+        public void ReturnFalseGivenIncorrectGroupOfThree(PieceModel.Colors c1, PieceModel.Colors c2, PieceModel.Colors c3, int n)
         {
             var pieces = new List<PieceModel>
             {
-                new PieceModel(n, c1),
-                new PieceModel(n, c2),
-                new PieceModel(n, c3)
+                new PieceModel(n, c1, 1),
+                new PieceModel(n, c2, 2),
+                new PieceModel(n, c3, 3)
             };
 
             var piecesService = new PieceTypeCheckerService();
@@ -81,8 +100,8 @@ namespace Tests
             var pieces = new List<PieceModel>
             {
                 new PieceModel(PieceModel.Types.Joker),
-                new PieceModel(6, PieceModel.Colors.Blue),
-                new PieceModel(6, PieceModel.Colors.Red)
+                new PieceModel(6, PieceModel.Colors.Blue, 1),
+                new PieceModel(6, PieceModel.Colors.Red, 2)
             };
 
             var piecesService = new PieceTypeCheckerService();
@@ -95,8 +114,8 @@ namespace Tests
             var pieces = new List<PieceModel>
             {
                 new PieceModel(PieceModel.Types.Joker),
-                new PieceModel(2, PieceModel.Colors.Red),
-                new PieceModel(3, PieceModel.Colors.Red)
+                new PieceModel(2, PieceModel.Colors.Red, 1),
+                new PieceModel(3, PieceModel.Colors.Red, 2)
             };
 
             var piecesService = new PieceTypeCheckerService();
@@ -108,9 +127,9 @@ namespace Tests
         {
             var pieces = new List<PieceModel>
             {
-                new PieceModel(2, PieceModel.Colors.Red),
+                new PieceModel(2, PieceModel.Colors.Red, 1),
                 new PieceModel(PieceModel.Types.Joker),
-                new PieceModel(4, PieceModel.Colors.Red)
+                new PieceModel(4, PieceModel.Colors.Red, 2)
             };
 
             var piecesService = new PieceTypeCheckerService();
@@ -122,9 +141,9 @@ namespace Tests
         {
             var pieces = new List<PieceModel>
             {
-                new PieceModel(12, PieceModel.Colors.Red),
+                new PieceModel(12, PieceModel.Colors.Red, 1),
                 new PieceModel(PieceModel.Types.Joker),
-                new PieceModel(1, PieceModel.Colors.Red)
+                new PieceModel(1, PieceModel.Colors.Red, 2)
             };
 
             var piecesService = new PieceTypeCheckerService();

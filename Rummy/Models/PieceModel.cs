@@ -31,6 +31,8 @@
         public Colors Color { get; set; }
         public Types Type { get; set; }
         public int Id { get; set; }
+        public string SetPlayerName { get; set; }
+        public int SetIndex { get; set; }
 
         public PieceModel(int number, Colors color, Locations location)
         {

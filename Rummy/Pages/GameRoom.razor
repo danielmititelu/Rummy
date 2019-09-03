@@ -27,7 +27,6 @@
         var index = playerOrder.IndexOf(playerName);
         <div class="player-@index-sets">
             <div class="sets">
-
                 @for (int i = 0; i < player.Sets.Count; i++)
                 {
                     var set = player.Sets[i];
@@ -80,6 +79,10 @@
             </div>
         }
     </div>
+
+    <div class="game-chat">
+        <Chat Username="@userName" Room="@room" />
+    </div>
 </div>
 
 @if (errorMessage != "")
@@ -94,9 +97,7 @@
     private string RoomName { get; set; }
 
     [CascadingParameter]
-    Task<AuthenticationState>
-    authenticationStateTask
-    { get; set; }
+    Task<AuthenticationState> authenticationStateTask { get; set; }
 
     PieceModel drawPiece = new PieceModel(PieceModel.Types.FaceDown,
     PieceModel.Locations.PiecesToDraw);
@@ -116,7 +117,9 @@
                 PieceModel.Locations.piecesSetOnTable),
                 new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.piecesSetOnTable),
-                                            };
+                                                    };
+
+    public string Message { get; set; }
 
     string errorMessage = "";
 
@@ -129,6 +132,7 @@
 
         room.OnDropPieceOnTable += StateChanged;
         room.OnDropSetOnTable += StateChanged;
+        room.OnMessageReceive += StateChanged;
 
         var authState = await authenticationStateTask;
         var user = authState.User;
@@ -251,6 +255,12 @@
         source.Type = PieceModel.Types.Empty;
         source.Number = 0;
         StateHasChanged();
+    }
+
+    void SendMessage()
+    {
+        room.Message($"{userName}: {Message}");
+        Message = "";
     }
 
     private PieceModel[,] PutPiecesOnBoard(List<PieceModel>

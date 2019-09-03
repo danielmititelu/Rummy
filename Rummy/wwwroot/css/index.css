@@ -6,3 +6,6 @@
     margin-top: 5px; }
   .index-page .create-room {
     margin-top: 10px; }
+  .index-page .inline {
+    display: flex;
+    align-items: center; }

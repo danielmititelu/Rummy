@@ -5,21 +5,17 @@
 <AuthorizeView>
     <Authorized>
         <div class="waiting-room">
-            <h4>@RoomName</h4>
-            @foreach (var message in messages)
-            {
-                <div>@message</div>
-            }
-
-            <input @bind="@Message" />
-            <button class="btn btn-primary" @onclick="@SendMessage">Send message</button>
-
+            <h2>@RoomName</h2>
             <h3>Players:</h3>
             @foreach (var player in players)
             {
                 <div>@player</div>
             }
+            <Chat Username="@userName" Room="@room"/>
+
+            <button class="btn btn-primary" @onclick="@QuitRoom">Quit room</button>
             <button class="btn btn-primary" @onclick="@StartGame">Start game</button>
+
         </div>
     </Authorized>
     <NotAuthorized>
@@ -34,18 +30,14 @@
     [Parameter]
     private string RoomName { get; set; }
 
-    List<string> messages = new List<string>();
     List<string> players = new List<string>();
     string userName;
-    public string Message { get; set; }
 
     RoomState room;
 
     protected override async Task OnInitAsync()
     {
         room = AllRoomsState.Rooms[RoomName];
-        room.OnMessageReceive += MessageReceived;
-        messages = AllRoomsState.Rooms[RoomName].Messages;
 
         room.OnPlayerJoin += PlayerJoined;
         players = room.Players;
@@ -60,22 +52,10 @@
         }
     }
 
-    void MessageReceived()
-    {
-        messages = room.Messages;
-        Invoke(() => StateHasChanged());
-    }
-
     void PlayerJoined()
     {
         players = room.Players;
         Invoke(() => StateHasChanged());
-    }
-
-    void SendMessage()
-    {
-        room.Message($"{userName}: {Message}");
-        Message = "";
     }
 
     public void GameStarted()
@@ -86,5 +66,10 @@
     void StartGame()
     {
         room.StartGame();
+    }
+
+    void QuitRoom()
+    {
+         UriHelper.NavigateTo($"/");
     }
 }

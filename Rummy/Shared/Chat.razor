@@ -1,0 +1,41 @@
+﻿@using Services
+
+<div class="chat">
+    <div class="message-zone">
+        @foreach (var message in Room.Messages)
+        {
+            <div>@message</div>
+        }
+    </div>
+    <div class="inline">
+        <input class="message-input" @bind="@Message" />
+        <button class="btn btn-primary send-message-button" @onclick="@SendMessage">Send message</button>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public RoomState Room { get; set; }
+
+    [Parameter]
+    public string Username { get; set; }
+
+    public string Message { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        Room.OnMessageReceive += StateChanged;
+    }
+
+    void StateChanged()
+    {
+        Invoke(() => StateHasChanged());
+    }
+
+    void SendMessage()
+    {
+        Room.Message($"{Username}: {Message}");
+        Message = "";
+    }
+}
+

@@ -2,12 +2,14 @@
 @using Models
 @inject DragAndDropService DragAndDropService
 
-@{ 
+@{
     var draggable = Model.Type != PieceModel.Types.Empty;
+    var className = $"{dragOverClass} {dragStartClass} {clickClass}";
 }
 
-<div ondragover="event.preventDefault()" @ondrop="@Drop">
-    <div draggable=@draggable.ToString() @ondragstart="@DragStart">
+<div class="@className" ondragover="event.preventDefault()" @ondrop="@Drop">
+    <div draggable=@draggable.ToString() @ondragstart="@DragStart" @ondragenter="@DragEnter"
+         @ondragleave="@DragLeave" @ondragend="@DragEnd" @onmousedown="@MouseDown">
         @if (Model.Type == PieceModel.Types.Normal)
         {
             <div class="@Model.Color.ToString().ToLower() piece">@Model.Number</div>
@@ -37,13 +39,41 @@
     [Parameter]
     Action<PieceModel, PieceModel> OnDrop { get; set; }
 
+    string dragOverClass;
+    string dragStartClass;
+    string clickClass;
+
     void Drop()
     {
         OnDrop(DragAndDropService.Model, Model);
+        dragOverClass = "";
     }
 
     void DragStart()
     {
         DragAndDropService.StartDrag(Model);
+        dragStartClass = "drag-start";
+    }
+
+    void DragEnter()
+    {
+        dragOverClass = "over";
+    }
+
+    void DragLeave()
+    {
+        dragOverClass = "";
+    }
+
+    void DragEnd()
+    {
+        dragStartClass = "";
+        dragOverClass = "";
+        clickClass = "";
+    }
+
+    void MouseDown()
+    {
+        clickClass = "piece-click";
     }
 }

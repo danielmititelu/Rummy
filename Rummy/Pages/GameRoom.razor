@@ -1,20 +1,13 @@
 @page "/gameRoom/{RoomName}"
 @using Models
 @using Services
+@inject IUriHelper UriHelper
 
 <div class="main-row">
-    <div class="row">
-        @foreach (var piece in room.Game.PiecesOnTable)
-        {
-            <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece" />
-        }
-    </div>
-</div>
-<br />
-
-<div class="draw-piece">
-    <div class="medium-font">Draw here:</div>
-    <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece" />
+    @foreach (var piece in room.Game.PiecesOnTable)
+    {
+        <PieceComponent OnDrop="@DropPieceOnTable" Model="@piece" />
+    }
 </div>
 
 <div class="ml-auto mr-auto row">
@@ -68,16 +61,25 @@
 </div>
 
 <div class="fixed-bottom">
+    <div style="width:200px" />
     <div class="board">
-        @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
+        @if (!room.Game.HasDrawnPiece && room.GetCurrentPlayer() == userName)
         {
-            <div class="row">
-                @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
-                {
-                    <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]" />
-                }
+            <div class="ml-auto mr-auto">
+                <PieceComponent OnDrop="@EmptyDropPiece" Model="@drawPiece" />
             </div>
         }
+        <div class="board">
+            @for (int x = 0; x < piecesOnBoard.GetLength(0); ++x)
+            {
+                <div class="row">
+                    @for (int y = 0; y < piecesOnBoard.GetLength(1); ++y)
+                    {
+                        <PieceComponent OnDrop="@DropPieceOnBoard" Model="@piecesOnBoard[x, y]" />
+                    }
+                </div>
+            }
+        </div>
     </div>
 
     <div class="game-chat">
@@ -117,7 +119,7 @@
                 PieceModel.Locations.piecesSetOnTable),
                 new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.piecesSetOnTable),
-                                                    };
+                                                                    };
 
     public string Message { get; set; }
 
@@ -128,6 +130,10 @@
 
     protected override async Task OnInitAsync()
     {
+        if (!AllRoomsState.Rooms.ContainsKey(RoomName))
+        {
+            UriHelper.NavigateTo("/");
+        }
         room = AllRoomsState.Rooms[RoomName];
 
         room.OnDropPieceOnTable += StateChanged;

@@ -21,3 +21,21 @@ body {
   color: white;
   font-size: 30px;
   margin: auto; }
+
+.board {
+  display: grid;
+  margin-right: auto;
+  margin-left: auto;
+  align-items: end;
+  margin-bottom: 20px; }
+
+.main-row {
+  min-width: 300px;
+  border: 2px solid black;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  overflow: auto;
+  padding: 4px; }

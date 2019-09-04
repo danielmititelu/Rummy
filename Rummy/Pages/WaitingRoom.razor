@@ -11,7 +11,7 @@
             {
                 <div>@player</div>
             }
-            <Chat Username="@userName" Room="@room"/>
+            <Chat Username="@userName" Room="@room" />
 
             <button class="btn btn-primary" @onclick="@QuitRoom">Quit room</button>
             <button class="btn btn-primary" @onclick="@StartGame">Start game</button>
@@ -37,6 +37,10 @@
 
     protected override async Task OnInitAsync()
     {
+        if (!AllRoomsState.Rooms.ContainsKey(RoomName))
+        {
+            UriHelper.NavigateTo("/");
+        }
         room = AllRoomsState.Rooms[RoomName];
 
         room.OnPlayerJoin += PlayerJoined;
@@ -70,6 +74,6 @@
 
     void QuitRoom()
     {
-         UriHelper.NavigateTo($"/");
+        UriHelper.NavigateTo($"/");
     }
 }

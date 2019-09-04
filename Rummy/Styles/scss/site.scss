@@ -39,23 +39,6 @@ canvas {
     border: 1px solid black;
 }
 
-.main-row {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
-
 .fixed-bottom {
     display: flex;
-}
-
-.draw-piece {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    left: 50%;
-    top: calc(50% - 60px);
-    transform: translate(-50%, -50%);
 }

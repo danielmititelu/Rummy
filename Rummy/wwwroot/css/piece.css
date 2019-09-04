@@ -10,6 +10,11 @@
   border: 1px solid black;
   background-color: white;
   background-image: url(/background.png); }
+  .piece:hover {
+    transform: scale(1.1); }
+
+.piece-click {
+  transform: scale(0.9); }
 
 .yellow {
   color: #f79f21; }
@@ -26,6 +31,28 @@
 .empty-piece {
   background: rgba(255, 255, 255, 0.5);
   cursor: default; }
+  .empty-piece:hover {
+    transform: none; }
 
 .face-down-piece {
-  background: white; }
+  background: white;
+  animation: .4s jump ease infinite alternate; }
+  .face-down-piece:hover {
+    transform: none; }
+
+.over {
+  background: darkgreen;
+  transform: scale(1.05);
+  opacity: 1; }
+
+.drag-start {
+  opacity: 0.6;
+  transform: scale(0.8); }
+
+@keyframes jump {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); }
+  100% {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); } }

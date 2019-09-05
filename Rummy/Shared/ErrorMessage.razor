@@ -1,0 +1,11 @@
+﻿@if (Message != "")
+{
+    <div class="error-message row">
+        <span class="error-text ml-auto mr-auto row">@Message</span>
+    </div>
+}
+
+@code  {
+    [Parameter]
+    public string Message{ get; set; }
+}

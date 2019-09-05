@@ -87,12 +87,7 @@
     </div>
 </div>
 
-@if (errorMessage != "")
-{
-    <div class="error-message row">
-        <span class="error-text ml-auto mr-auto row">@errorMessage</span>
-    </div>
-}
+<ErrorMessage Message="@errorMessage" />
 
 @code {
     [Parameter]

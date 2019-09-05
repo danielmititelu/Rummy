@@ -15,8 +15,47 @@
 .player-0-sets {
   bottom: 0px;
   position: absolute;
-  left: 2%;
   z-index: 9999; }
+
+@media (max-width: 4000px) {
+  .player-0-sets {
+    left: 25%; } }
+
+@media (max-width: 2000px) {
+  .player-0-sets {
+    left: 20%; } }
+
+@media (max-width: 1900px) {
+  .player-0-sets {
+    left: 21%; } }
+
+@media (max-width: 1800px) {
+  .player-0-sets {
+    left: 20%; } }
+
+@media (max-width: 1700px) {
+  .player-0-sets {
+    left: 17%; } }
+
+@media (max-width: 1600px) {
+  .player-0-sets {
+    left: 15%; } }
+
+@media (max-width: 1500px) {
+  .player-0-sets {
+    left: 13%; } }
+
+@media (max-width: 1400px) {
+  .player-0-sets {
+    left: 10%; } }
+
+@media (max-width: 1300px) {
+  .player-0-sets {
+    left: 7%; } }
+
+@media (max-width: 1200px) {
+  .player-0-sets {
+    left: 5%; } }
 
 .player-1-sets {
   position: absolute;

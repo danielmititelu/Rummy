@@ -16,6 +16,10 @@
 .piece-click {
   transform: scale(0.9); }
 
+.joker {
+  height: 20px;
+  width: 20px; }
+
 .yellow {
   color: #f79f21; }
 

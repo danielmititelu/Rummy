@@ -18,7 +18,10 @@
     {
         var player = room.Game.Players[playerName];
         var index = playerOrder.IndexOf(playerName);
+        var playerTurnMark = playerName == room.GetCurrentPlayer() ? "X" : "";
+
         <div class="player-@index-sets">
+            <div class="text-center medium-font">Score: @player.Score</div>
             <div class="sets">
                 @for (int i = 0; i < player.Sets.Count; i++)
                 {
@@ -51,11 +54,11 @@
                     </div>
                 }
             </div>
-            <span class="medium-font">@playerName</span>
-            @if (playerName == room.GetCurrentPlayer())
-            {
-                <span class="medium-font">X</span>
-            }
+            <div class="text-center medium-font">@playerName @playerTurnMark</div>
+            @*@if (playerName == room.GetCurrentPlayer())
+                {
+                    <span class="medium-font">X</span>
+                }*@
         </div>
     }
 </div>
@@ -114,7 +117,7 @@
                 PieceModel.Locations.piecesSetOnTable),
                 new PieceModel(PieceModel.Types.Empty,
                 PieceModel.Locations.piecesSetOnTable),
-                                                                    };
+                                                                        };
 
     public string Message { get; set; }
 

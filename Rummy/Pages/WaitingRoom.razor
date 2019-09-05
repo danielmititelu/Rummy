@@ -6,11 +6,13 @@
     <Authorized>
         <div class="waiting-room">
             <h2>@RoomName</h2>
-            <h3>Players:</h3>
-            @foreach (var player in players)
-            {
-                <div>@player</div>
-            }
+            <div class="player-list">
+                <h3>Players:</h3>
+                @foreach (var player in players)
+                {
+                    <div>@player</div>
+                }
+            </div>
             <Chat Username="@userName" Room="@room" />
 
             <button class="btn btn-primary" @onclick="@QuitRoom">Quit room</button>

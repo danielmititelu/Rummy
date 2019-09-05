@@ -9,7 +9,7 @@
                 <select @bind="@selectedRoom" class="form-control" multiple>
                     @foreach (var room in rooms)
                     {
-                        <option value="@room">@room</option>
+                    <option value="@room">@room</option>
                     }
                 </select>
             </div>
@@ -63,10 +63,18 @@
 
     void CreateRoom()
     {
+        if (RoomName == "" || RoomName == null)
+        {
+            ShowError("Room name cannot be empty");
+            return;
+        }
+
         if (AllRoomsState.Rooms.ContainsKey(RoomName))
         {
             ShowError("A room already exists with that name");
+            return;
         }
+
         AllRoomsState.AddRoom(RoomName, userName);
         UriHelper.NavigateTo($"/waitingRoom/{RoomName}");
     }

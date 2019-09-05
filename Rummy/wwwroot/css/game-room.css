@@ -29,6 +29,10 @@ body {
   align-items: end;
   margin-bottom: 20px; }
 
+@media (max-width: 1114px) {
+  .board {
+    width: 228px; } }
+
 .main-row {
   min-width: 300px;
   border: 2px solid black;

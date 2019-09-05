@@ -14,6 +14,10 @@
   margin-left: auto;
   margin-right: auto;
   width: 300px; }
+  .waiting-room .player-list {
+    background: white;
+    margin-bottom: 5px;
+    min-height: 120px; }
 
 .piece {
   margin: 1px;
@@ -32,6 +36,10 @@
 
 .piece-click {
   transform: scale(0.9); }
+
+.joker {
+  height: 20px;
+  width: 20px; }
 
 .yellow {
   color: #f79f21; }
@@ -91,8 +99,47 @@
 .player-0-sets {
   bottom: 0px;
   position: absolute;
-  left: 2%;
   z-index: 9999; }
+
+@media (max-width: 4000px) {
+  .player-0-sets {
+    left: 25%; } }
+
+@media (max-width: 2000px) {
+  .player-0-sets {
+    left: 20%; } }
+
+@media (max-width: 1900px) {
+  .player-0-sets {
+    left: 21%; } }
+
+@media (max-width: 1800px) {
+  .player-0-sets {
+    left: 20%; } }
+
+@media (max-width: 1700px) {
+  .player-0-sets {
+    left: 17%; } }
+
+@media (max-width: 1600px) {
+  .player-0-sets {
+    left: 15%; } }
+
+@media (max-width: 1500px) {
+  .player-0-sets {
+    left: 13%; } }
+
+@media (max-width: 1400px) {
+  .player-0-sets {
+    left: 10%; } }
+
+@media (max-width: 1300px) {
+  .player-0-sets {
+    left: 7%; } }
+
+@media (max-width: 1200px) {
+  .player-0-sets {
+    left: 5%; } }
 
 .player-1-sets {
   position: absolute;
@@ -145,6 +192,10 @@ body {
   margin-left: auto;
   align-items: end;
   margin-bottom: 20px; }
+
+@media (max-width: 1114px) {
+  .board {
+    width: 228px; } }
 
 .main-row {
   min-width: 300px;

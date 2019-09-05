@@ -6,5 +6,6 @@ namespace Rummy.Models
     {
         public List<PieceModel> PiecesOnBoard { get; set; }
         public List<List<PieceModel>> Sets { get; set; }
+        public int Score { get; set; }
     }
 }

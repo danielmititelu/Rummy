@@ -22,7 +22,7 @@
 
     public string Message { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
         Room.OnMessageReceive += StateChanged;
     }

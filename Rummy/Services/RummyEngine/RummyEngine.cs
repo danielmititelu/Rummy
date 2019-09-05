@@ -169,6 +169,13 @@ namespace Rummy.Services
                 var random = new Random();
                 var index = random.Next(remainingPieces.Count);
                 var piece = remainingPieces[index];
+                while (pieces.Any(p => p.Color == piece.Color
+                    && p.Number == piece.Number))
+                {
+                    index = random.Next(remainingPieces.Count);
+                    piece = remainingPieces[index];
+                }
+
                 remainingPieces.Remove(piece);
                 pieces.Add(piece);
             }

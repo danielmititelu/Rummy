@@ -78,7 +78,7 @@
 
     void JoinRoom()
     {
-        if (selectedRoom != null)
+        if (selectedRoom == null)
         {
             ShowError("You must select a room");
             return;

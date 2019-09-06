@@ -3,13 +3,19 @@
 @inject DragAndDropService DragAndDropService
 
 @{
-    var draggable = Model.Type != PieceModel.Types.Empty;
+    var draggable = "true";
+    if (Model.Type == PieceModel.Types.Empty || Model.Location == PieceModel.Locations.piecesSetOnTable
+        || Model.Location == PieceModel.Locations.Table)
+    {
+        draggable = "false";
+    }
     var className = $"{dragOverClass} {dragStartClass} {clickClass}";
 }
 
 <div class="@className" ondragover="event.preventDefault()" @ondrop="@Drop">
-    <div draggable=@draggable.ToString() @ondragstart="@DragStart" @ondragenter="@DragEnter"
-         @ondragleave="@DragLeave" @ondragend="@DragEnd" @onmousedown="@MouseDown">
+    <div draggable=@draggable @ondragstart="@DragStart" @ondragenter="@DragEnter"
+         @ondragleave="@DragLeave" @ondragend="@DragEnd" @onmousedown="@MouseDown"
+         @onmouseup="@MouseUp">
         @if (Model.Type == PieceModel.Types.Normal)
         {
             <div class="@Model.Color.ToString().ToLower() piece">@Model.Number</div>
@@ -77,5 +83,10 @@
     void MouseDown()
     {
         clickClass = "piece-click";
+    }
+
+   void MouseUp()
+    {
+        clickClass = "";
     }
 }

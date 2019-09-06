@@ -86,6 +86,7 @@ namespace Rummy.Services
             }
 
             var tmp = piece.ShallowCopy();
+            tmp.Location = PieceModel.Locations.Table;
             game.PiecesOnTable.Insert(game.PiecesOnTable.Count - 1, tmp);
             game.Players[playerName].PiecesOnBoard.Remove(piece);
             game.CurrentPlayerTurn = PassTurn(game.PlayerOrder, game.CurrentPlayerTurn);
@@ -104,7 +105,12 @@ namespace Rummy.Services
 
             if (_pieceTypeChecker.IsSet(set))
             {
-                game.Players[playerName].Sets.Add(set);
+                var newSet = set.Select(p => {
+                    var piece = p.ShallowCopy();
+                    piece.Location = PieceModel.Locations.piecesSetOnTable;
+                    return piece;
+                    }).ToList();
+                game.Players[playerName].Sets.Add(newSet);
                 game.Players[playerName].Score += CalculateScore(set);
                 var response = new Response { Success = true };
                 return (response, game);

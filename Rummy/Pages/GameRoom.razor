@@ -47,18 +47,14 @@
                 @if (userName == playerName)
                 {
                     <div class="set">
-                        @foreach (var piece in piecesSetOnTable)
+                        @foreach (var piece in setToDropOnTable)
                         {
-                            <PieceComponent OnDrop="@DropPieceOnPiecesSetOnTable" Model="@piece" />
+                            <PieceComponent OnDrop="@DropPieceOnSetToDropOnTable" Model="@piece" />
                         }
                     </div>
                 }
             </div>
             <div class="text-center medium-font">@playerName @playerTurnMark</div>
-            @*@if (playerName == room.GetCurrentPlayer())
-                {
-                    <span class="medium-font">X</span>
-                }*@
         </div>
     }
 </div>
@@ -108,16 +104,15 @@
         piecesToDraw = new List<PieceModel>
             ();
 
-    List<PieceModel>
-        piecesSetOnTable = new List<PieceModel>
-            {
-                new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable),
-                new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable),
-                new PieceModel(PieceModel.Types.Empty,
-                PieceModel.Locations.piecesSetOnTable),
-                                                                        };
+    List<PieceModel> setToDropOnTable = new List<PieceModel>
+        {
+            new PieceModel(PieceModel.Types.Empty,
+            PieceModel.Locations.SetToDropOnTable),
+            new PieceModel(PieceModel.Types.Empty,
+            PieceModel.Locations.SetToDropOnTable),
+            new PieceModel(PieceModel.Types.Empty,
+            PieceModel.Locations.SetToDropOnTable),
+        };
 
     public string Message { get; set; }
 
@@ -202,7 +197,7 @@
         StateHasChanged();
     }
 
-    void DropPieceOnPiecesSetOnTable(PieceModel source, PieceModel target)
+    void DropPieceOnSetToDropOnTable(PieceModel source, PieceModel target)
     {
         if (source.Location != PieceModel.Locations.Board)
         {
@@ -211,23 +206,23 @@
 
         SwitchPieces(source, target);
 
-        if (piecesSetOnTable.All(p => p.Type != PieceModel.Types.Empty))
+        if (setToDropOnTable.All(p => p.Type != PieceModel.Types.Empty))
         {
-            var response = room.AddSet(piecesSetOnTable, userName);
+            var response = room.AddSet(setToDropOnTable, userName);
             if (!response.Success)
             {
                 ShowError(response.Message);
             }
             else
             {
-                piecesSetOnTable = new List<PieceModel>
+                setToDropOnTable = new List<PieceModel>
 {
                     new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.piecesSetOnTable),
+                    PieceModel.Locations.SetToDropOnTable),
                     new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.piecesSetOnTable),
+                    PieceModel.Locations.SetToDropOnTable),
                     new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.piecesSetOnTable),
+                    PieceModel.Locations.SetToDropOnTable),
                 };
             }
         }

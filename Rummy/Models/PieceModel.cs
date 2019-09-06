@@ -23,7 +23,8 @@
             Board,
             PiecesToDraw,
             Table,
-            piecesSetOnTable
+            piecesSetOnTable,
+            SetToDropOnTable
         }
 
         public Locations Location { get; set; }

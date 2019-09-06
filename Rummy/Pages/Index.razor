@@ -7,9 +7,10 @@
         <div class="index-page">
             <div class="row">
                 <select @bind="@selectedRoom" class="form-control" multiple>
-                    @foreach (var room in rooms)
+                    @foreach (var room in AllRoomsState.Rooms)
                     {
-                    <option value="@room">@room</option>
+                        var optionValue = $"{room.Key} - {room.Value.Players.Count}/4";
+                        <option value="@room.Key">@optionValue</option>
                     }
                 </select>
             </div>
@@ -36,8 +37,6 @@
     Task<AuthenticationState> authenticationStateTask { get; set; }
 
     string userName;
-    List<string>
-    rooms = new List<string>();
     string selectedRoom;
     public string RoomName { get; set; }
     string errorMessage = "";
@@ -45,7 +44,6 @@
     protected override async Task OnInitAsync()
     {
         AllRoomsState.OnRoomAdded += RoomAdded;
-        rooms = AllRoomsState.Rooms.Keys.ToList();
 
         var authState = await authenticationStateTask;
         var user = authState.User;
@@ -57,7 +55,6 @@
 
     void RoomAdded()
     {
-        rooms = AllRoomsState.Rooms.Keys.ToList();
         Invoke(() => StateHasChanged());
     }
 
@@ -83,9 +80,18 @@
     {
         if (selectedRoom != null)
         {
-            AllRoomsState.JoinRoom(selectedRoom, userName);
-            UriHelper.NavigateTo($"/waitingRoom/{selectedRoom}");
+            ShowError("You must select a room");
+            return;
         }
+
+        if (AllRoomsState.Rooms[selectedRoom].Players.Count == 4)
+        {
+            ShowError("Room is already full");
+            return;
+        }
+
+        AllRoomsState.JoinRoom(selectedRoom, userName);
+        UriHelper.NavigateTo($"/waitingRoom/{selectedRoom}");
     }
 
     private void ShowError(string message)

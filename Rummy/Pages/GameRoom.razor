@@ -96,6 +96,7 @@
 </div>
 
 <ErrorMessage Message="@errorMessage" />
+<EndGameModal Players="@room.Game.Players" Show="@room.Game.GameEnded" />
 
 @code {
     [Parameter]
@@ -109,19 +110,17 @@
 
     PieceModel[,] piecesOnBoard = new PieceModel[3, 14];
 
-    List<PieceModel>
-        piecesToDraw = new List<PieceModel>
-            ();
+    List<PieceModel> piecesToDraw = new List<PieceModel>();
 
     List<PieceModel> setToDropOnTable = new List<PieceModel>
     {
-            new PieceModel(PieceModel.Types.Empty,
-            PieceModel.Locations.SetToDropOnTable),
-            new PieceModel(PieceModel.Types.Empty,
-            PieceModel.Locations.SetToDropOnTable),
-            new PieceModel(PieceModel.Types.Empty,
-            PieceModel.Locations.SetToDropOnTable),
-        };
+        new PieceModel(PieceModel.Types.Empty,
+        PieceModel.Locations.SetToDropOnTable),
+        new PieceModel(PieceModel.Types.Empty,
+        PieceModel.Locations.SetToDropOnTable),
+        new PieceModel(PieceModel.Types.Empty,
+        PieceModel.Locations.SetToDropOnTable),
+    };
 
     public string Message { get; set; }
 
@@ -141,6 +140,7 @@
         room.OnDropPieceOnTable += StateChanged;
         room.OnDropSetOnTable += StateChanged;
         room.OnMessageReceive += StateChanged;
+        room.OnGameEnd += StateChanged;
 
         var authState = await authenticationStateTask;
         var user = authState.User;

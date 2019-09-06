@@ -22,6 +22,7 @@ namespace Rummy.Services
         public event Action OnStartGame;
         public event Action OnDropPieceOnTable;
         public event Action OnDropSetOnTable;
+        public event Action OnGameEnd;
 
         public void Message(string message)
         {
@@ -60,6 +61,10 @@ namespace Rummy.Services
             var (response, game) = _rummyEngine.AddPieceOnTable(Game, source, playerName);
             Game = game;
             OnDropPieceOnTable.Invoke();
+            if (game.GameEnded)
+            {
+                OnGameEnd.Invoke();
+            }
             return response;
         }
 

@@ -11,5 +11,6 @@ namespace Rummy.Models
         public bool HasDrawnPiece { get; set; }
         public List<PieceModel> PiecesPool { get; set; }
         public List<PieceModel> PiecesOnTable { get; set; }
+        public bool GameEnded { get; set; }
     }
 }

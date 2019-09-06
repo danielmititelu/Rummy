@@ -32,6 +32,7 @@ namespace Rummy.Services
                 Players = players,
                 PlayerOrder = playersNames,
                 CurrentPlayerTurn = RandomlyChoseFirstPlayer(players),
+                GameEnded = false,
                 PiecesOnTable = new List<PieceModel>() {
                     new PieceModel(PieceModel.Types.Empty,
                     PieceModel.Locations.Board)}
@@ -91,6 +92,10 @@ namespace Rummy.Services
             game.Players[playerName].PiecesOnBoard.Remove(piece);
             game.CurrentPlayerTurn = PassTurn(game.PlayerOrder, game.CurrentPlayerTurn);
             game.HasDrawnPiece = false;
+            if (game.Players[playerName].PiecesOnBoard.Count == 0)
+            {
+                game.GameEnded = true;
+            }
             var response = new Response { Success = true };
             return (response, game);
         }

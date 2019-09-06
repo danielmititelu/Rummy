@@ -1,0 +1,32 @@
+﻿@inject IUriHelper UriHelper
+@using Models
+
+@{
+    var hideClass = Show ? "" : "hide";
+}
+
+<div class="end-game-modal @hideClass">
+    <div class="end-game-modal-content">
+        <h4 class="ml-auto mr-auto">End Game</h4>
+        <div class="ml-auto mr-auto">
+            @foreach (var player in Players)
+            {
+                <div>@player.Key <span>:@player.Value.Score</span></div>
+            }
+        </div>
+        <button class="mt-3 ml-auto mr-auto btn btn-primary" @onclick="@QuitGame">Quit game</button>
+    </div>
+</div>
+
+@code  {
+    [Parameter]
+    public bool Show { get; set; }
+
+    [Parameter]
+    public Dictionary<string, Player> Players { get; set; }
+
+    void QuitGame()
+    {
+        UriHelper.NavigateTo($"/");
+    }
+}

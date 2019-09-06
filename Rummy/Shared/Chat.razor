@@ -8,7 +8,7 @@
         }
     </div>
     <div class="inline">
-        <input class="message-input" @bind="@Message" />
+        <input class="message-input" @bind="@Message" @onkeyup="@KeyUp"/>
         <button class="btn btn-primary send-message-button" @onclick="@SendMessage">Send message</button>
     </div>
 </div>
@@ -30,6 +30,14 @@
     void StateChanged()
     {
         Invoke(() => StateHasChanged());
+    }
+
+    void KeyUp(UIKeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SendMessage();
+        }
     }
 
     void SendMessage()

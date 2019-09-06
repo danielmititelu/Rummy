@@ -16,7 +16,11 @@
             <Chat Username="@userName" Room="@room" />
 
             <button class="btn btn-primary" @onclick="@QuitRoom">Quit room</button>
-            <button class="btn btn-primary" @onclick="@StartGame">Start game</button>
+            @if (players.First() == userName)
+            {
+                <button class="btn btn-primary" @onclick="@StartGame">Start game</button>
+
+            }
 
         </div>
     </Authorized>

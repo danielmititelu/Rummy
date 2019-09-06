@@ -26,20 +26,29 @@
                 @for (int i = 0; i < player.Sets.Count; i++)
                 {
                     var set = player.Sets[i];
-                    var setPiece = new PieceModel(PieceModel.Types.Empty,
-                    PieceModel.Locations.piecesSetOnTable)
+                    var setPieceLeft = new PieceModel(PieceModel.Types.Empty,
+                        PieceModel.Locations.piecesSetOnTable)
                     {
                         SetPlayerName = playerName,
-                        SetIndex = i
+                        SetIndex = i,
+                        RightOfSet = false
+                    };
+
+                    var setPieceRight = new PieceModel(PieceModel.Types.Empty,
+                        PieceModel.Locations.piecesSetOnTable)
+                    {
+                        SetPlayerName = playerName,
+                        SetIndex = i,
+                        RightOfSet = true
                     };
                     <div>
                         <div class="ml-auto mr-auto row">
-                            <PieceComponent OnDrop="@DropPieceOnSet" Model="@setPiece" />
+                            <PieceComponent OnDrop="@DropPieceOnSet" Model="@setPieceLeft" />
                             @foreach (var piece in set)
                             {
                                 <PieceComponent OnDrop="@EmptyDropPiece" Model="@piece" />
                             }
-                            <PieceComponent OnDrop="@DropPieceOnSet" Model="@setPiece" />
+                            <PieceComponent OnDrop="@DropPieceOnSet" Model="@setPieceRight" />
                         </div>
                     </div>
                 }
@@ -105,7 +114,7 @@
             ();
 
     List<PieceModel> setToDropOnTable = new List<PieceModel>
-        {
+    {
             new PieceModel(PieceModel.Types.Empty,
             PieceModel.Locations.SetToDropOnTable),
             new PieceModel(PieceModel.Types.Empty,
@@ -187,13 +196,16 @@
             return;
         }
 
-        var response = room.AddPieceToSet(target.SetIndex, target.SetPlayerName, source, userName);
+        var response = room.AddPieceToSet(target.SetIndex, target.SetPlayerName, target.RightOfSet,
+            source, userName);
         if (!response.Success)
         {
             ShowError(response.Message);
             return;
         }
 
+        source.Type = PieceModel.Types.Empty;
+        source.Number = 0;
         StateHasChanged();
     }
 

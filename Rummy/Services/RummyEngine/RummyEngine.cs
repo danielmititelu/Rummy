@@ -124,7 +124,7 @@ namespace Rummy.Services
             return (errorResponse, game);
         }
 
-        private int CalculateScore(List<PieceModel> set)
+        private int CalculateScore(IEnumerable<PieceModel> set)
         {
             var score = 0;
             foreach (var piece in set)
@@ -149,8 +149,8 @@ namespace Rummy.Services
             return score;
         }
 
-        public (Response, RummyModel) AddPieceToSet(RummyModel game, int setIndex,
-            string setPlayerName, PieceModel piece, string playerName)
+        public (Response, RummyModel) AddPieceToSet(RummyModel game, int setIndex, 
+            string setPlayerName, bool right, PieceModel piece, string playerName)
         {
             if (!IsPlayerTurn(game, playerName))
             {
@@ -158,14 +158,22 @@ namespace Rummy.Services
                 return (errorTurnResponse, game);
             }
 
-            var set = new List<PieceModel>(game.Players[setPlayerName].Sets[setIndex])
+            var set = new List<PieceModel>(game.Players[setPlayerName].Sets[setIndex]);
+            var temp = piece.ShallowCopy();
+            temp.Location = PieceModel.Locations.piecesSetOnTable;
+            if (right)
             {
-                piece
-            };
+                set.Add(temp);
+            }
+            else
+            {
+                set.Insert(0, temp);
+            }
 
             if (_pieceTypeChecker.IsSet(set))
             {
-                game.Players[playerName].Sets[setIndex].Add(piece);
+                game.Players[setPlayerName].Sets[setIndex] = set;
+                game.Players[playerName].Score += CalculateScore(new List<PieceModel> { piece });
                 var response = new Response { Success = true };
                 return (response, game);
             }

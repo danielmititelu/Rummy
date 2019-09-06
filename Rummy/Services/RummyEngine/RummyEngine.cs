@@ -95,6 +95,11 @@ namespace Rummy.Services
             if (game.Players[playerName].PiecesOnBoard.Count == 0)
             {
                 game.GameEnded = true;
+                game.Players[playerName].Score += 50;
+                foreach (var player in game.Players)
+                {
+                    player.Value.Score -= CalculateScore(player.Value.PiecesOnBoard);
+                }
             }
             var response = new Response { Success = true };
             return (response, game);
@@ -110,11 +115,12 @@ namespace Rummy.Services
 
             if (_pieceTypeChecker.IsSet(set))
             {
-                var newSet = set.Select(p => {
+                var newSet = set.Select(p =>
+                {
                     var piece = p.ShallowCopy();
                     piece.Location = PieceModel.Locations.piecesSetOnTable;
                     return piece;
-                    }).ToList();
+                }).ToList();
                 game.Players[playerName].Sets.Add(newSet);
                 game.Players[playerName].Score += CalculateScore(set);
                 var response = new Response { Success = true };
@@ -154,7 +160,7 @@ namespace Rummy.Services
             return score;
         }
 
-        public (Response, RummyModel) AddPieceToSet(RummyModel game, int setIndex, 
+        public (Response, RummyModel) AddPieceToSet(RummyModel game, int setIndex,
             string setPlayerName, bool right, PieceModel piece, string playerName)
         {
             if (!IsPlayerTurn(game, playerName))

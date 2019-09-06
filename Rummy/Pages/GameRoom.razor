@@ -19,6 +19,7 @@
         var player = room.Game.Players[playerName];
         var index = playerOrder.IndexOf(playerName);
         var playerTurnMark = playerName == room.GetCurrentPlayer() ? "X" : "";
+        var playerTurnClass = playerName == room.GetCurrentPlayer() ? "player-turn" : "";
 
         <div class="player-@index-sets">
             <div class="text-center medium-font">Score: @player.Score</div>
@@ -63,7 +64,9 @@
                     </div>
                 }
             </div>
-            <div class="text-center medium-font">@playerName @playerTurnMark</div>
+            <div class="player-name text-center medium-font @playerTurnClass">
+                @playerName @playerTurnMark
+            </div>
         </div>
     }
 </div>
@@ -113,7 +116,7 @@
     List<PieceModel> piecesToDraw = new List<PieceModel>();
 
     List<PieceModel> setToDropOnTable = new List<PieceModel>
-    {
+{
         new PieceModel(PieceModel.Types.Empty,
         PieceModel.Locations.SetToDropOnTable),
         new PieceModel(PieceModel.Types.Empty,
@@ -228,7 +231,7 @@
             else
             {
                 setToDropOnTable = new List<PieceModel>
-                {
+            {
                     new PieceModel(PieceModel.Types.Empty,
                     PieceModel.Locations.SetToDropOnTable),
                     new PieceModel(PieceModel.Types.Empty,
